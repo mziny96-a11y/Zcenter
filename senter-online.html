@@ -1,0 +1,3175 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سنتر الدروس | نظام الإدارة</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3CradialGradient id='g' cx='30%25' cy='30%25'%3E%3Cstop offset='0%25' stop-color='%23E9C77E'/%3E%3Cstop offset='70%25' stop-color='%23D4A657'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='32' cy='32' r='32' fill='url(%23g)'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-weight='700' font-size='28' fill='%233A2410' text-anchor='middle'%3E%D8%B3%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=El+Messiri:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F5F8;
+  --bg-soft:#EAEBF0;
+  --surface:#FFFFFF;
+  --surface-2:#F6F7FA;
+  --sidebar:#15161F;
+  --sidebar-hover:#212230;
+  --sidebar-text:#B8B9C7;
+  --gold:#D4A657;
+  --gold-light:#E9C77E;
+  --primary:#C0245C;
+  --primary-dark:#98183F;
+  --primary-light:#FBE3ED;
+  --text:#1A1B23;
+  --text-muted:#767986;
+  --border:#E4E5EB;
+  --success:#12946B;
+  --success-bg:#DDF5EC;
+  --danger:#DC3545;
+  --danger-bg:#FCE4E6;
+  --warning:#D68A1F;
+  --warning-bg:#FCEFD9;
+  --radius:16px;
+  --shadow: 0 2px 10px rgba(20,20,35,.05), 0 1px 2px rgba(20,20,35,.05);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;overflow-x:hidden;max-width:100vw;}
+body{ background:var(--bg); color:var(--text); font-family:'Tajawal',sans-serif; min-height:100vh; }
+h1,h2,h3,.brand,.display{font-family:'El Messiri',serif;}
+::-webkit-scrollbar{width:9px;height:9px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+
+#app{display:flex;flex-direction:column;min-height:100vh;max-width:100vw;overflow-x:hidden;}
+
+/* TOP NAV */
+.topnav{
+  display:flex;align-items:center;gap:22px;
+  background:var(--sidebar);color:var(--sidebar-text);
+  padding:0 24px;height:64px;flex:none;
+  position:sticky;top:0;z-index:30;
+}
+.topnav-brand{display:flex;align-items:center;gap:10px;flex:none;}
+.brand-mark{
+  width:38px;height:38px;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%, var(--gold-light), var(--gold) 70%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'El Messiri',serif;font-weight:700;font-size:17px;color:#3A2410;flex:none;
+}
+.brand-titles{overflow:hidden;}
+.brand-name{font-size:14.5px;font-weight:700;color:#F3E9DC;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;}
+.brand-sub{font-size:10.5px;color:var(--sidebar-text);opacity:.7;margin-top:1px;}
+
+.topnav-menu{display:flex;align-items:center;gap:2px;flex:1;overflow-x:auto;overflow-y:visible;scrollbar-width:none;}
+.topnav-menu::-webkit-scrollbar{display:none;}
+.topnav-item{position:relative;flex:none;}
+.topnav-btn{
+  display:flex;align-items:center;gap:7px;padding:10px 13px;border-radius:9px;
+  cursor:pointer;font-size:13px;font-weight:500;color:var(--sidebar-text);white-space:nowrap;user-select:none;
+  transition:background .15s,color .15s;
+}
+.topnav-btn:hover{background:var(--sidebar-hover);color:#fff;}
+.topnav-btn.active{background:linear-gradient(90deg, rgba(212,166,87,.22), rgba(212,166,87,.08));color:var(--gold-light);}
+.topnav-btn .chev{font-size:10px;opacity:.7;margin-inline-start:2px;}
+.topnav-dropdown{
+  position:fixed;min-width:210px;
+  background:var(--surface);border:1px solid var(--border);border-radius:13px;
+  box-shadow:0 16px 36px rgba(15,15,25,.2);padding:6px;z-index:250;
+  display:none;
+}
+.topnav-item.open .topnav-dropdown{display:block;}
+.dropdown-item{
+  display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:9px;
+  font-size:13.5px;color:var(--text);cursor:pointer;white-space:nowrap;
+  transition:background .12s;
+}
+.dropdown-item:hover{background:var(--surface-2);}
+.dropdown-item.active{background:var(--primary-light);color:var(--primary-dark);font-weight:700;}
+
+.teacher-search-wrap{position:relative;}
+.teacher-search-dropdown{
+  position:absolute;top:calc(100% + 4px);right:0;left:0;z-index:60;
+  background:var(--surface);border:1px solid var(--border);border-radius:11px;
+  box-shadow:0 14px 32px rgba(15,15,25,.16);padding:6px;max-height:230px;overflow-y:auto;
+}
+.teacher-search-dropdown .dropdown-item{white-space:normal;}
+.teacher-search-dropdown .dropdown-item.empty{color:var(--text-muted);cursor:default;}
+.teacher-search-dropdown .dropdown-item.empty:hover{background:none;}
+
+.topnav-actions{display:flex;align-items:center;gap:10px;flex:none;}
+.topnav-actions .btn-outline{ background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14);color:var(--sidebar-text); }
+.topnav-actions .btn-outline:hover{ background:rgba(255,255,255,.12);color:#F3E9DC; }
+.topnav-userbar{display:flex;align-items:center;gap:8px;padding-right:10px;margin-right:2px;border-right:1px solid rgba(255,255,255,.12);}
+.logout-btn{cursor:pointer;background:rgba(220,90,90,.14);border:1px solid rgba(220,90,90,.3);color:#E8918D;padding:7px 10px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex:none;font-family:inherit;font-size:13px;transition:background .15s,color .15s;}
+.logout-btn:hover{background:rgba(220,90,90,.28);color:#FFD3D0;}
+.conn-pill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;padding:5px 12px;border-radius:99px;font-weight:600;background:rgba(18,148,107,.18);color:#5CE0AE;white-space:nowrap;}
+
+/* PAGE */
+.page-header{ background:var(--bg); border-bottom:1px solid var(--border); padding:16px 28px; position:sticky; top:64px; z-index:20; }
+.page-header h1{margin:0;font-size:20px;font-weight:700;color:var(--text);}
+.page-header .sub{font-size:12.5px;color:var(--text-muted);margin-top:2px;}
+.content{padding:22px 28px 60px 28px;flex:1;min-width:0;}
+
+/* CARDS / GRID */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:11px;margin-bottom:18px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow);transition:box-shadow .18s, transform .18s;}
+.stat-card:hover{box-shadow:0 6px 18px rgba(60,40,30,.09), 0 2px 4px rgba(60,40,30,.07);transform:translateY(-1px);}
+.stat-card .lbl{font-size:10.5px;color:var(--text-muted);margin-bottom:6px;font-weight:500;}
+.stat-card .val{font-size:18px;font-weight:700;font-family:'El Messiri',serif;color:var(--text);letter-spacing:-.01em;}
+.stat-card.rose .val{color:var(--primary);}
+.stat-card.gold .val{color:#8A6220;}
+.stat-card.green .val{color:var(--success);}
+.stat-card.red .val{color:var(--danger);}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 24px;margin-bottom:20px;}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:10px;flex-wrap:wrap;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.card-head h2{font-size:16.5px;margin:0;font-weight:700;color:var(--text);letter-spacing:-.01em;}
+
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.row6{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;}
+
+/* BUTTONS */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:'Tajawal',sans-serif;font-size:13.5px;font-weight:600;
+  padding:9px 16px;border-radius:9px;border:1px solid transparent;
+  cursor:pointer;transition:background .15s, box-shadow .15s, transform .1s, border-color .15s;
+  white-space:nowrap;
+}
+.btn:active{transform:translateY(1px);}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:0 1px 2px rgba(140,75,92,.25);}
+.btn-primary:hover{background:var(--primary-dark);box-shadow:0 3px 8px rgba(140,75,92,.32);}
+.btn-gold{background:var(--gold);color:#3A2410;box-shadow:0 1px 2px rgba(212,166,87,.3);}
+.btn-gold:hover{background:#B98940;box-shadow:0 3px 8px rgba(212,166,87,.35);}
+.btn-success{background:var(--success);color:#fff;box-shadow:0 1px 2px rgba(18,148,107,.25);}
+.btn-success:hover{background:#0d7a58;}
+.btn-danger{background:var(--danger);color:#fff;box-shadow:0 1px 2px rgba(220,53,69,.25);}
+.btn-danger:hover{background:#b52a37;}
+.btn-outline{background:var(--surface);border-color:var(--border);color:var(--text);}
+.btn-outline:hover{background:var(--surface-2);border-color:#D9CBB0;}
+.btn-danger-o{background:var(--surface);border-color:var(--danger);color:var(--danger);}
+.btn-danger-o:hover{background:var(--danger-bg);}
+.btn-sm{padding:6.5px 12px;font-size:12.5px;}
+.btn-icon{padding:7px;border-radius:8px;}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+
+/* FORMS */
+label{font-size:12.5px;color:var(--text-muted);display:block;margin-bottom:5px;font-weight:500;}
+input,select,textarea{
+  width:100%;font-family:'Tajawal',sans-serif;font-size:14px;color:var(--text);
+  padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface-2);
+  outline:none;transition:border-color .15s, box-shadow .15s, background .15s;
+}
+input[type="checkbox"],input[type="radio"]{width:16px;height:16px;padding:0;border:none;background:none;accent-color:var(--primary);cursor:pointer;}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);background:var(--surface);box-shadow:0 0 0 3px rgba(212,166,87,.15);}
+.field{margin-bottom:13px;}
+.hint{font-size:12.5px;color:var(--text-muted);}
+.radio-row{display:flex;align-items:center;gap:8px;padding:8px 0;cursor:pointer;font-size:13.5px;font-weight:500;}
+.radio-row input{flex:none;}
+
+/* قايمة مصروفات مجمّعة باليوم — كل يوم صف قابل للفتح (details/summary) بيوضح ملخصه، وبيفتح تفاصيل مصروفات اليوم ده جواه */
+.expense-day-group{border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;}
+.expense-day-group:last-child{margin-bottom:0;}
+.expense-day-summary{
+  list-style:none;cursor:pointer;padding:13px 16px;background:var(--surface-2);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-weight:600;
+}
+.expense-day-summary::-webkit-details-marker{display:none;}
+.expense-day-summary::before{content:'›';display:inline-block;margin-inline-end:8px;transition:transform .15s;color:var(--text-muted);font-size:16px;}
+.expense-day-group[open] > .expense-day-summary::before{transform:rotate(90deg);}
+.expense-day-summary:hover{background:var(--bg-soft);}
+.expense-day-date{color:var(--text);font-size:14px;}
+.expense-day-meta{display:flex;align-items:center;gap:14px;font-size:13px;color:var(--text-muted);font-weight:500;}
+.expense-day-total{color:var(--text);font-weight:700;}
+.expense-day-body{padding:0;}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;overflow-y:hidden;border:1px solid var(--border);border-radius:12px;}
+table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--surface);}
+thead th{
+  text-align:right;background:var(--surface-2);color:var(--text-muted);
+  padding:11px 14px;font-weight:700;font-size:11px;white-space:nowrap;
+  text-transform:uppercase;letter-spacing:.03em;border-bottom:1.5px solid var(--border);
+}
+tbody td{padding:12px 14px;border-bottom:1px solid var(--border);}
+tbody tr:hover{background:var(--surface-2);}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr.row-cancelled td{opacity:.55;}
+tbody tr.row-cancelled td.strike{text-decoration:line-through;}
+.tnum{font-variant-numeric:tabular-nums;}
+.empty-row{color:var(--text-muted);text-align:center;padding:22px;font-size:13px;}
+.empty{text-align:center;padding:36px 16px;color:var(--text-muted);}
+.empty h3{margin:0 0 6px 0;color:var(--text);font-size:15px;}
+.empty p{margin:0;font-size:13px;}
+
+.badge{display:inline-block;padding:3.5px 11px;border-radius:7px;font-size:11px;font-weight:700;letter-spacing:.01em;white-space:nowrap;}
+.badge.paid{background:var(--success-bg);color:var(--success);}
+.badge.partial{background:var(--warning-bg);color:var(--warning);}
+.badge.unpaid{background:var(--danger-bg);color:var(--danger);}
+.badge.neutral{background:var(--surface-2);color:var(--text-muted);}
+
+/* CENTERS */
+.center-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;}
+.center-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);}
+.center-card h3{margin:0 0 10px 0;font-size:15px;border-bottom:2px solid var(--gold);padding-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+.hall-chip{background:var(--surface-2);border-radius:9px;padding:8px 10px;margin-bottom:6px;font-size:12.5px;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+
+/* SETUP / AUTH SCREENS */
+.setup-wrap{position:fixed;inset:0;background:var(--bg);z-index:200;overflow-y:auto;padding:40px 16px;display:flex;align-items:center;}
+.setup-card{max-width:660px;width:100%;margin:0 auto;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:30px 32px;box-shadow:var(--shadow);}
+
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--border);overflow-x:auto;}
+.tab{padding:9px 16px;font-size:13.5px;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:color .15s, border-color .15s;font-weight:500;}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--primary);border-color:var(--primary);font-weight:700;}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(20,15,15,.45);display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;z-index:150;overflow-y:auto;}
+.modal{background:var(--surface);border-radius:16px;max-width:460px;width:100%;padding:24px 26px;box-shadow:0 20px 50px rgba(20,15,15,.3);}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.modal-head h3{margin:0;font-size:16px;color:var(--primary-dark);}
+.modal-close{cursor:pointer;background:none;border:none;font-size:16px;color:var(--text-muted);padding:5px 9px;border-radius:8px;}
+.modal-close:hover{background:var(--surface-2);}
+.modal-foot{display:flex;justify-content:flex-end;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);}
+
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#15161F;color:#F3E9DC;padding:11px 22px;border-radius:10px;font-size:13.5px;box-shadow:0 6px 20px rgba(0,0,0,.25);z-index:100;opacity:0;transition:opacity .25s;pointer-events:none;}
+.toast.show{opacity:1;}
+
+@media print{
+  .topnav, .page-header, .no-print{ display:none !important; }
+}
+
+@media screen and (max-width:980px){
+  .content{padding:16px;}
+  .page-header{padding:12px 16px;}
+  .row2,.row3,.row6{grid-template-columns:1fr;}
+}
+@media screen and (max-width:640px){
+  input,select,textarea{font-size:16px;}
+  .topnav{padding:0 10px;gap:6px;height:56px;}
+  .topnav-brand{gap:6px;}
+  .brand-mark{width:32px;height:32px;font-size:14px;}
+  .brand-titles{display:none;}
+  .page-header{top:56px;padding:10px 14px;}
+  .page-header h1{font-size:16.5px;}
+  .page-header .sub{display:none;}
+  .content{padding:10px;}
+  .card{padding:14px 14px;margin-bottom:14px;}
+  .card-head{flex-direction:column;align-items:stretch;gap:10px;}
+  .card-head h2{font-size:14.5px;}
+  .btn{padding:8px 12px;font-size:12.5px;}
+  .btn-sm{padding:6px 10px;font-size:11.5px;}
+  .stat-grid{grid-template-columns:1fr 1fr;gap:10px;}
+  .stat-card{padding:12px 14px;}
+  .stat-card .val{font-size:18px;}
+  table{font-size:12px;}
+  thead th{padding:8px 10px;font-size:9.5px;}
+  tbody td{padding:9px 10px;}
+  .topnav-userbar > div{display:none;}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="modalRoot"></div>
+<div id="toast" class="toast"></div>
+
+<script>
+/* =========================================================================
+   نظام سنتر الدروس — نسخة أونلاين بس (Supabase)
+   سناتر متعددة، كل سنتر بمدرجاته، مدرسين بمادة وسعر واحد، حصص/مواعيد
+   ثابتة بتتولد يوميًا وتتحصّل أو تتلغي/تتأجل من الصفحة الرئيسية.
+   ========================================================================= */
+
+const DEFAULT_SUPABASE_URL = 'https://brpfuggoidmoxvxgkxfz.supabase.co';
+const DEFAULT_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJycGZ1Z2dvaWRtb3h2eGdreGZ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5NjUzODYsImV4cCI6MjEwMjU0MTM4Nn0.KxQutXYvHzxoh9V2sRKX4XYC0HQ0fU6YAsdG8XBAKw4';
+
+/* ---------------- Utilities ---------------- */
+function uid(){ return 'id_' + Date.now().toString(36) + Math.random().toString(36).slice(2,9); }
+function pad(n){ return String(n).padStart(2,'0'); }
+function todayISO(){ const d = new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function nowHHMM(){ const d = new Date(); return pad(d.getHours())+':'+pad(d.getMinutes()); }
+function addDaysISO(dateStr, delta){
+  const [y,m,d] = dateStr.split('-').map(Number);
+  const dt = new Date(y, m-1, d);
+  dt.setDate(dt.getDate()+delta);
+  return dt.getFullYear()+'-'+pad(dt.getMonth()+1)+'-'+pad(dt.getDate());
+}
+function arabicWeekdayFromISO(dateStr){
+  const [y,m,d] = dateStr.split('-').map(Number);
+  const dt = new Date(y, m-1, d);
+  return (dt.getDay()+1)%7; // Sat=0 .. Fri=6
+}
+const ARABIC_DAYS = ['السبت','الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة'];
+function fmt2(n){ return (Math.round((n||0)*100)/100).toFixed(2); }
+function escapeHtml(s){
+  return (s==null?'':String(s)).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(()=>el.classList.remove('show'), 2800);
+}
+function normalizeSupaUrl(raw){
+  let u = (raw||'').trim().replace(/\s+/g,'');
+  if(!u) return u;
+  if(!/^https?:\/\//i.test(u)){ u = 'https://'+u; }
+  u = u.replace(/\/(rest|auth|realtime|storage)\/v1\/?.*$/i, '');
+  u = u.replace(/\/+$/,'');
+  return u;
+}
+async function testSupaConnection(url, key){
+  let res;
+  try{
+    res = await fetch(url+'/auth/v1/settings', { headers:{ 'apikey':key } });
+  }catch(e){
+    throw new Error('مقدرش أوصل للرابط أصلاً: '+url+'\n(اتأكد إنه Project URL صحيح ومنسوخ كامل من Project Settings → API)');
+  }
+  if(!res.ok){
+    throw new Error('الرابط اتفتح بس رجّع HTTP '+res.status+' على: '+url+'\n(اتأكد إنه ده "Project URL" بالظبط من غير أي إضافات زي /rest/v1 أو /auth/v1، وإن الـ anon key مظبوط)');
+  }
+  return true;
+}
+function camelToSnake(s){ return s.replace(/[A-Z]/g, m=>'_'+m.toLowerCase()); }
+function snakeToCamel(s){ return s.replace(/_([a-z0-9])/g, (_,c)=>c.toUpperCase()); }
+function objToSnake(obj){ const out={}; for(const k in obj){ out[camelToSnake(k)] = obj[k]; } return out; }
+function objToCamel(obj){ const out={}; for(const k in obj){ out[snakeToCamel(k)] = obj[k]; } return out; }
+
+/* ---------------- Permission modules ---------------- */
+const PERMISSION_MODULES = [
+  {key:'centers', label:'السناتر والمدرجات'},
+  {key:'teachers', label:'المدرسين ومواعيدهم'},
+  {key:'employees', label:'الموظفين ومرتباتهم وسلفهم'},
+  {key:'sessions', label:'الحصص (الرئيسية)'},
+  {key:'treasury', label:'الخزينة'},
+  {key:'expenses', label:'مصروفات السنتر'},
+  {key:'expenses_delete', label:'حذف المصروفات'},
+  {key:'reports', label:'التقارير'},
+  {key:'manage_users', label:'إدارة المستخدمين (صلاحيات وحذف)'},
+  {key:'audit_log', label:'سجل التدقيق (عرض فقط)'},
+  {key:'settings', label:'إعدادات النظام (بيانات النظام)'},
+];
+const TAB_PERM = {dashboard:'sessions', centers:'centers', teachers:'teachers', employees:'employees', reports:'reports', treasury:'treasury', expenses:'expenses'};
+const CANCEL_REASONS = ['المدرس اعتذر', 'تأجيل لموعد تاني', 'سبب تاني'];
+
+function can(moduleKey){
+  if(!SESSION) return false;
+  if(SESSION.profile.role==='admin') return true;
+  return !!(SESSION.profile.permissions||{})[moduleKey];
+}
+function requirePerm(moduleKey){
+  if(can(moduleKey)) return true;
+  toast('الصلاحية دي مش متاحة لحسابك');
+  return false;
+}
+
+/* ---------------- State ---------------- */
+let DB = null;
+let onlineStage = 'connect';
+let SUPA = { url:'', key:'' };
+let SESSION = null;
+let allProfiles = [];
+
+let currentView = 'dashboard';
+let editingTeacherId = null;
+let editingEmployeeId = null;
+let selectedDate = todayISO();
+let reportsState = { teacherId:'', from:'', to:'' };
+let modalState = null;      // {type:'collect'|'cancel', sessionId} | {type:'add-session'}
+let navDropdownOpen = false;
+let treasuryFilterCenterId = ''; // '' = كل السناتر
+let pnlFilterCenterId = ''; // فلترة تقرير الأرباح والخسائر الشهري بالسنتر (الفرع)
+let pnlPeriod = 'monthly'; // 'monthly' أو 'weekly' — أي تقرير أرباح/خسائر ظاهر حاليًا في "التقارير"
+let auditLogState = { loaded:false, loading:false, entries:[] };
+const STALE_PENDING_DAYS = 3; // بعد كام يوم يعتبر المصروف المعلّق "متأخر" ويظهر تنبيه عليه
+
+/* ---------------- تذكّر الجلسة (عشان الريفرش ميرجّعش لشاشة الدخول) ---------------- */
+const SESSION_STORAGE_KEY = 'senterOnlineSessionV1';
+function saveSessionToStorage(){
+  try{ localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify({ supa:SUPA, session:SESSION })); }
+  catch(e){ /* localStorage مش متاح (مثلاً معاينة sandboxed) - تجاهل بأمان */ }
+}
+function loadSessionFromStorage(){
+  try{ const raw = localStorage.getItem(SESSION_STORAGE_KEY); return raw ? JSON.parse(raw) : null; }
+  catch(e){ return null; }
+}
+function clearSessionStorage(){
+  try{ localStorage.removeItem(SESSION_STORAGE_KEY); }catch(e){}
+}
+
+/* ---------------- تذكّر اسم النظام محليًا (عشان يظهر في شاشات الدخول قبل الاتصال بالسيرفر) ---------------- */
+const ORG_NAME_STORAGE_KEY = 'senterOnlineOrgNameV1';
+const DEFAULT_SYSTEM_NAME = 'سنتر الدروس';
+function getCachedOrgName(){
+  try{ return localStorage.getItem(ORG_NAME_STORAGE_KEY) || ''; }catch(e){ return ''; }
+}
+function setCachedOrgName(name){
+  try{
+    if(name){ localStorage.setItem(ORG_NAME_STORAGE_KEY, name); }
+    else{ localStorage.removeItem(ORG_NAME_STORAGE_KEY); }
+  }catch(e){ /* localStorage مش متاح - تجاهل بأمان */ }
+}
+function currentSystemName(){
+  return (DB && DB.orgSettings && DB.orgSettings.companyName) || getCachedOrgName() || DEFAULT_SYSTEM_NAME;
+}
+function updateDocumentTitle(){
+  try{ document.title = currentSystemName() + ' | نظام الإدارة'; }catch(e){}
+}
+
+/* ---------------- Lookups ---------------- */
+function centerById(id){ return DB.centers.find(c=>c.id===id); }
+function hallById(id){ return DB.halls.find(h=>h.id===id); }
+function teacherById(id){ return DB.teachers.find(t=>t.id===id); }
+function centerName(id){ const c=centerById(id); return c? c.name : '—'; }
+function hallName(id){ const h=hallById(id); return h? h.name : '—'; }
+function hallCenterName(hallId){ const h=hallById(hallId); return h? centerName(h.centerId) : '—'; }
+function teacherName(id){ const t=teacherById(id); return t? t.name : '—'; }
+function teacherSubject(id){ const t=teacherById(id); return t? t.subject : ''; }
+function employeeById(id){ return DB.employees.find(e=>e.id===id); }
+function employeeName(id){ const e=employeeById(id); return e? e.name : '—'; }
+
+/* ---------------- المراحل السنية (المدرس ممكن يدرّس أكتر من مرحلة بسعر مختلف لكل واحدة) ---------------- */
+const GRADE_LEVELS = [
+  {key:'prim1', label:'الأول الابتدائي'},
+  {key:'prim2', label:'الثاني الابتدائي'},
+  {key:'prim3', label:'الثالث الابتدائي'},
+  {key:'prim4', label:'الرابع الابتدائي'},
+  {key:'prim5', label:'الخامس الابتدائي'},
+  {key:'prim6', label:'السادس الابتدائي'},
+  {key:'prep1', label:'الأول الإعدادي'},
+  {key:'prep2', label:'الثاني الإعدادي'},
+  {key:'prep3', label:'الثالث الإعدادي'},
+  {key:'sec1', label:'الأول الثانوي'},
+  {key:'sec2', label:'الثاني الثانوي'},
+  {key:'sec3', label:'الثالث الثانوي'},
+];
+function gradeLabel(key){ const g = GRADE_LEVELS.find(x=>x.key===key); return g? g.label : ''; }
+// المراحل اللي المدرس ده بيدرّسها فعليًا (محدد لها سعر خاص في بروفايله)
+function teacherGrades(teacher){
+  if(!teacher || !teacher.gradeRates) return [];
+  return GRADE_LEVELS.filter(g => teacher.gradeRates[g.key]!=null);
+}
+// سعر الطالب لمرحلة معيّنة عند مدرس معيّن — لو المرحلة مش محددة أو المدرس مالوش سعر خاص بيها، بيرجع السعر العام
+function teacherRateForGrade(teacher, gradeKey){
+  if(!teacher) return 0;
+  if(gradeKey && teacher.gradeRates && teacher.gradeRates[gradeKey]!=null) return teacher.gradeRates[gradeKey];
+  return teacher.ratePerChild||0;
+}
+
+/* ---------------- Supabase: auth (بريد إلكتروني حقيقي) ---------------- */
+async function supaAuthRequest(path, body){
+  const res = await fetch(SUPA.url+path, { method:'POST', headers:{'apikey':SUPA.key,'Authorization':'Bearer '+SUPA.key,'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  const data = await res.json().catch(()=>({}));
+  if(!res.ok) throw new Error(data.error_description || data.msg || data.error || ('HTTP '+res.status));
+  return data;
+}
+async function fetchProfileById(accessToken, userId){
+  const res = await fetch(SUPA.url+'/rest/v1/profiles?id=eq.'+userId+'&select=*', { headers:{ 'apikey':SUPA.key, 'Authorization':'Bearer '+accessToken } });
+  const rows = await res.json().catch(()=>[]);
+  return (rows && rows[0]) ? objToCamel(rows[0]) : null;
+}
+async function createProfileRow(accessToken, userId, username, fullName){
+  let tryUsername = (username||'').trim() || ('user_'+userId.slice(0,6));
+  for(let attempt=0; attempt<3; attempt++){
+    const res = await fetch(SUPA.url+'/rest/v1/profiles', {
+      method:'POST',
+      headers:{ 'apikey':SUPA.key, 'Authorization':'Bearer '+accessToken, 'Content-Type':'application/json', 'Prefer':'return=representation' },
+      body: JSON.stringify([{ id:userId, username:tryUsername, full_name:(fullName||tryUsername).trim(), role:'staff', permissions:{} }])
+    });
+    if(res.ok){ const rows = await res.json(); return objToCamel(rows[0]); }
+    const t = await res.text().catch(()=>'');
+    if(res.status===404 || /relation .* does not exist/i.test(t)){
+      throw new Error('يبدو إن جدول profiles مش موجود — اتأكد إنك شغّلت سكريبت supabase-schema.sql كامل في SQL Editor بتاع مشروعك.');
+    }
+    if(/duplicate key|already exists|unique/i.test(t)){
+      tryUsername = tryUsername + '_' + Math.floor(Math.random()*1000);
+      continue;
+    }
+    throw new Error('فشل إنشاء بروفايل المستخدم (HTTP '+res.status+'): '+t);
+  }
+  throw new Error('فشل إنشاء بروفايل المستخدم: اسم المستخدم مكرر، جرب اسم تاني.');
+}
+async function doSignup(fullName, username, email, password){
+  const data = await supaAuthRequest('/auth/v1/signup', {email, password});
+  if(!data.access_token || !data.user){
+    return { pendingConfirmation:true };
+  }
+  const profile = await createProfileRow(data.access_token, data.user.id, username, fullName);
+  return { access_token:data.access_token, refresh_token:data.refresh_token, user:data.user, profile };
+}
+/* ---------------- تسجيل الدخول باسم المستخدم بدل البريد الإلكتروني ---------------- */
+const USERNAME_PATTERN = /^[A-Za-z0-9_.-]{3,32}$/;
+function usernameToSyntheticEmail(username){
+  return (username||'').trim().toLowerCase() + '@senter.local';
+}
+async function lookupEmailByUsername(username){
+  const uname = (username||'').trim();
+  if(!uname) return null;
+  try{
+    const res = await fetch(SUPA.url+'/rest/v1/rpc/get_auth_email_by_username', {
+      method:'POST',
+      headers:{ 'apikey':SUPA.key, 'Authorization':'Bearer '+SUPA.key, 'Content-Type':'application/json' },
+      body: JSON.stringify({ p_username: uname })
+    });
+    if(!res.ok) return null;
+    const data = await res.json().catch(()=>null);
+    return (typeof data === 'string' && data) ? data : null;
+  }catch(e){ return null; }
+}
+/* ---------------- ربط الموظف بالشريك (المدرس) — موافقة على المصاريف ---------------- */
+async function teacherHasLinkedLogin(teacherId){
+  if(!teacherId) return false;
+  try{
+    const res = await fetch(SUPA.url+'/rest/v1/rpc/teacher_has_active_login', {
+      method:'POST',
+      headers:{ 'apikey':SUPA.key, 'Authorization':'Bearer '+(SESSION? SESSION.access_token : SUPA.key), 'Content-Type':'application/json' },
+      body: JSON.stringify({ p_teacher_id: teacherId })
+    });
+    if(!res.ok) return false;
+    const data = await res.json().catch(()=>false);
+    return data===true;
+  }catch(e){ return false; }
+}
+async function doLogin(email, password){
+  const data = await supaAuthRequest('/auth/v1/token?grant_type=password', {email, password});
+  if(!data.access_token) throw new Error('البريد الإلكتروني أو كلمة المرور غير صحيحة');
+  let profile = await fetchProfileById(data.access_token, data.user.id);
+  if(!profile){
+    const displayName = prompt('أول دخول ليك! اكتب اسمك اللي هيتعرض في النظام:') || email.split('@')[0];
+    profile = await createProfileRow(data.access_token, data.user.id, email.split('@')[0], displayName);
+  }
+  if(profile.active===false){ throw new Error('الحساب ده متعطل — تواصل مع الأدمن'); }
+  return { access_token:data.access_token, refresh_token:data.refresh_token, user:data.user, profile };
+}
+async function refreshAccessToken(){
+  if(!SESSION || !SESSION.refresh_token) return false;
+  try{
+    const data = await supaAuthRequest('/auth/v1/token?grant_type=refresh_token', {refresh_token:SESSION.refresh_token});
+    if(data.access_token){
+      SESSION.access_token=data.access_token; SESSION.refresh_token=data.refresh_token||SESSION.refresh_token;
+      saveSessionToStorage();
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+async function supaFetch(path, opts={}){
+  const doFetch = ()=> fetch(SUPA.url+path, {
+    ...opts,
+    headers:{
+      'apikey': SUPA.key,
+      'Authorization': 'Bearer '+(SESSION? SESSION.access_token : SUPA.key),
+      'Content-Type':'application/json',
+      ...(opts.headers||{})
+    }
+  });
+  let res = await doFetch();
+  if(res.status===401 && SESSION){
+    const ok = await refreshAccessToken();
+    if(ok) res = await doFetch();
+  }
+  if(!res.ok){
+    const t = await res.text().catch(()=>'');
+    let msg = t;
+    try{ msg = JSON.parse(t).message || t; }catch(e){}
+    throw new Error(msg || ('HTTP '+res.status));
+  }
+  return res;
+}
+
+/* ---------------- Supabase: generic data layer ---------------- */
+async function dbList(table, query){
+  const res = await supaFetch('/rest/v1/'+table+'?select=*'+(query?('&'+query):''));
+  const rows = await res.json();
+  return rows.map(objToCamel);
+}
+async function dbInsert(table, camelObj){
+  const res = await supaFetch('/rest/v1/'+table, { method:'POST', headers:{'Prefer':'return=representation'}, body: JSON.stringify([objToSnake(camelObj)]) });
+  const rows = await res.json();
+  return objToCamel(rows[0]);
+}
+async function dbUpdate(table, id, camelPatch){
+  await supaFetch('/rest/v1/'+table+'?id=eq.'+id, { method:'PATCH', body: JSON.stringify(objToSnake(camelPatch)) });
+}
+async function dbDelete(table, id){
+  await supaFetch('/rest/v1/'+table+'?id=eq.'+id, { method:'DELETE' });
+}
+async function loadAllTablesFromSupabase(){
+  const [centers, halls, teachers, employees, weeklySchedule, sessions, treasury, orgSettingsRows, teacherLedger, employeeLedger] = await Promise.all([
+    dbList('centers'), dbList('halls'), dbList('teachers'), dbList('employees'),
+    dbList('weekly_schedule'), dbList('sessions'), dbList('treasury_transactions'), dbList('org_settings'), dbList('teacher_ledger'), dbList('employee_ledger')
+  ]);
+  DB = { centers, halls, teachers, employees, weeklySchedule, sessions, treasury, orgSettings: orgSettingsRows[0]||null, teacherLedger, employeeLedger };
+  // نسجّل اسم النظام محليًا عشان يظهر في شاشات الدخول قبل ما نتصل بالسيرفر تاني على نفس الجهاز
+  setCachedOrgName(DB.orgSettings && DB.orgSettings.companyName ? DB.orgSettings.companyName : '');
+}
+async function refreshUsersList(){
+  if(!SESSION) return;
+  try{ allProfiles = await dbList('profiles'); }
+  catch(e){ toast('فشل تحميل المستخدمين: '+e.message); }
+}
+async function deactivateUserById(id){
+  if(!(SESSION && (SESSION.profile.role==='admin' || can('manage_users')))){ toast('الصفحة دي للأدمن أو لمين عنده صلاحية إدارة المستخدمين بس'); return; }
+  if(SESSION.profile.id===id){ toast('مينفعش تحذف حسابك انت'); return; }
+  const target = allProfiles.find(u=>u.id===id);
+  if(target && target.role==='admin' && SESSION.profile.role!=='admin'){ toast('مينفعش تحذف حساب أدمن'); return; }
+  try{ await dbUpdate('profiles', id, { active:false }); toast('تم حذف المستخدم'); }
+  catch(e){ toast('فشل الحذف: '+e.message); return; }
+  await logAudit('delete', 'user', id, 'عطّل حساب المستخدم: '+(target?target.username:id));
+  await refreshUsersList();
+}
+
+/* ---------------- سجل التدقيق (Audit log) — best-effort، فشله ميوقفش أي عملية أساسية ---------------- */
+async function logAudit(action, entityType, entityId, description){
+  if(!SESSION) return;
+  try{
+    const saved = await dbInsert('audit_log', {
+      actorId: SESSION.profile.id,
+      actorName: SESSION.profile.fullName || SESSION.profile.username,
+      action, entityType,
+      entityId: (entityId!=null) ? String(entityId) : null,
+      description
+    });
+    if(auditLogState.loaded){ auditLogState.entries.unshift(saved); }
+  }catch(e){ /* تسجيل السجل عملية ثانوية — أي فشل فيه (مثلاً صلاحية ناقصة) ميوقفش العملية الأساسية */ }
+}
+async function loadAuditLog(){
+  if(!(SESSION && (SESSION.profile.role==='admin' || can('audit_log')))) return;
+  auditLogState.loading = true;
+  try{
+    const rows = await dbList('audit_log', 'order=created_at.desc&limit=300');
+    // نرتب في الجافاسكريبت كمان (مش بس على السيرفر) عشان نضمن الترتيب الصحيح دايمًا
+    auditLogState.entries = rows.sort((a,b)=> (b.createdAt||'').localeCompare(a.createdAt||''));
+    auditLogState.loaded = true;
+  }catch(e){ toast('فشل تحميل سجل التدقيق: '+e.message); }
+  auditLogState.loading = false;
+}
+
+/* ---------------- Business logic: org settings & admin user management ---------------- */
+async function saveOrgSettings(companyName, phone, address){
+  if(!(SESSION && (SESSION.profile.role==='admin' || can('settings')))){ toast('الصفحة دي للأدمن أو لمين عنده صلاحية إعدادات النظام بس'); return; }
+  const patch = { companyName:(companyName||'').trim(), phone:(phone||'').trim(), address:(address||'').trim() };
+  try{
+    if(DB.orgSettings && DB.orgSettings.id){
+      await dbUpdate('org_settings', DB.orgSettings.id, patch);
+      Object.assign(DB.orgSettings, patch);
+    } else {
+      const saved = await dbInsert('org_settings', patch);
+      DB.orgSettings = saved;
+    }
+    setCachedOrgName(patch.companyName);
+    toast('تم حفظ بيانات النظام');
+    await logAudit('update','org_settings', (DB.orgSettings&&DB.orgSettings.id)||null, 'عدّل بيانات النظام (الاسم: '+(patch.companyName||'-')+')');
+  }catch(e){ toast('فشل الحفظ: '+e.message); }
+}
+async function adminCreateUser(fullName, username, password, role, permissions, teacherId){
+  if(!(SESSION && SESSION.profile.role==='admin')){ toast('الصفحة دي للأدمن بس'); return false; }
+  fullName=(fullName||'').trim(); username=(username||'').trim().toLowerCase();
+  if(!fullName || !username || !password){ toast('لازم تملأ كل الحقول'); return false; }
+  if(!USERNAME_PATTERN.test(username)){ toast('اسم المستخدم لازم يكون حروف إنجليزية وأرقام بس (يُسمح بـ . _ -)، من غير مسافات، من 3 لـ32 حرف'); return false; }
+  const email = usernameToSyntheticEmail(username);
+  let result;
+  try{ result = await doSignup(fullName, username, email, password); }
+  catch(e){
+    const dup = /already registered|duplicate|already exists/i.test(e.message||'');
+    toast('فشل إنشاء الحساب: '+(dup ? 'اسم المستخدم ده مستخدم قبل كده، جرب اسم تاني' : e.message));
+    return false;
+  }
+  if(result.pendingConfirmation){
+    toast('اتعمل الحساب بس محتاج تأكيد إيميل — عشان اسم المستخدم دلوقتي مش مرتبط بإيميل حقيقي، لازم تقفل خانة "Confirm email" من إعدادات Supabase (Authentication ← Providers ← Email) عشان الحسابات الجديدة تتفعّل على طول.');
+    return true;
+  }
+  const patch = { role, permissions };
+  if(teacherId){ patch.teacherId = teacherId; }
+  try{ await dbUpdate('profiles', result.profile.id, patch); }
+  catch(e){ toast('اتعمل الحساب بس فشل ضبط الدور/الصلاحيات: '+e.message); return true; }
+  toast('تم إنشاء المستخدم بنجاح');
+  await logAudit('create','user', result.profile.id, 'أضاف مستخدم جديد: '+username+' ('+(role==='admin'?'أدمن':'موظف')+')');
+  return true;
+}
+
+/* ---------------- Business logic: centers & halls ---------------- */
+async function addCenter(name){
+  if(!requirePerm('centers')) return null;
+  name=(name||'').trim(); if(!name) return null;
+  try{ const saved = await dbInsert('centers', {name, active:true}); DB.centers.push(saved); await logAudit('create','center', saved.id, 'أضاف سنتر: '+name); return saved.id; }
+  catch(e){ toast('فشل الحفظ: '+e.message); return null; }
+}
+async function deleteCenterById(id){
+  if(!requirePerm('centers')) return;
+  const hasHalls = DB.halls.some(h=>h.centerId===id && h.active);
+  if(hasHalls){ toast('لازم تحذف مدرجات السنتر ده الأول'); return; }
+  const c=centerById(id);
+  try{ await dbUpdate('centers', id, {active:false}); }catch(e){ toast('فشل: '+e.message); return; }
+  if(c) c.active=false;
+  await logAudit('delete','center', id, 'حذف سنتر: '+(c?c.name:id));
+}
+async function addHall(centerId, name){
+  if(!requirePerm('centers')) return;
+  name=(name||'').trim(); if(!name) return;
+  try{ const saved = await dbInsert('halls', {centerId, name, active:true}); DB.halls.push(saved); await logAudit('create','hall', saved.id, 'أضاف مدرج: '+name); }
+  catch(e){ toast('فشل الحفظ: '+e.message); return; }
+}
+async function deleteHallById(id){
+  if(!requirePerm('centers')) return;
+  const h=hallById(id);
+  try{ await dbUpdate('halls', id, {active:false}); }catch(e){ toast('فشل: '+e.message); return; }
+  if(h) h.active=false;
+  await logAudit('delete','hall', id, 'حذف مدرج: '+(h?h.name:id));
+}
+
+/* ---------------- Business logic: teachers & their weekly schedule ---------------- */
+// gradeRates: كائن {grade_key: rate} — المراحل السنية اللي المدرس اختار إنه بيدرّسها وسعرها الخاص
+function sanitizeGradeRates(gradeRates){
+  const clean = {};
+  Object.keys(gradeRates||{}).forEach(k=>{
+    if(!GRADE_LEVELS.some(g=>g.key===k)) return;
+    const r = parseFloat(gradeRates[k]);
+    clean[k] = (isNaN(r)||r<0) ? 0 : r;
+  });
+  return clean;
+}
+async function addTeacher(name, subject, rateRaw, phone, notes, sharePercentRaw, gradeRatesRaw){
+  if(!requirePerm('teachers')) return null;
+  name=(name||'').trim(); subject=(subject||'').trim();
+  if(!name || !subject) return null;
+  const rate = parseFloat(rateRaw);
+  if(isNaN(rate) || rate<0){ toast('سعر الطالب غير صحيح'); return null; }
+  let sharePercent = parseFloat(sharePercentRaw);
+  if(isNaN(sharePercent) || sharePercent<0) sharePercent = 0;
+  if(sharePercent>100) sharePercent = 100;
+  const gradeRates = sanitizeGradeRates(gradeRatesRaw);
+  const obj = { name, subject, ratePerChild:rate, phone:phone||'', notes:notes||'', sharePercent, gradeRates, active:true };
+  try{ const saved = await dbInsert('teachers', obj); DB.teachers.push(saved); await logAudit('create','teacher', saved.id, 'أضاف مدرس: '+name); return saved.id; }
+  catch(e){ toast('فشل الحفظ: '+e.message); return null; }
+}
+async function saveTeacherData(id, name, subject, rateRaw, phone, notes, sharePercentRaw, gradeRatesRaw){
+  if(!requirePerm('teachers')) return;
+  const rate = parseFloat(rateRaw);
+  if(isNaN(rate) || rate<0){ toast('سعر الطالب غير صحيح'); return; }
+  let sharePercent = parseFloat(sharePercentRaw);
+  if(isNaN(sharePercent) || sharePercent<0) sharePercent = 0;
+  if(sharePercent>100) sharePercent = 100;
+  const gradeRates = sanitizeGradeRates(gradeRatesRaw);
+  const patch = { name:(name||'').trim(), subject:(subject||'').trim(), ratePerChild:rate, phone:phone||'', notes:notes||'', sharePercent, gradeRates };
+  try{ await dbUpdate('teachers', id, patch); }catch(e){ toast('فشل الحفظ: '+e.message); return; }
+  const t=teacherById(id); if(t) Object.assign(t,patch);
+  await logAudit('update','teacher', id, 'عدّل بيانات مدرس: '+patch.name);
+}
+async function deleteTeacherById(id){
+  if(!requirePerm('teachers')) return;
+  const t=teacherById(id);
+  try{ await dbUpdate('teachers', id, {active:false}); }catch(e){ toast('فشل: '+e.message); return; }
+  if(t) t.active=false;
+  await logAudit('delete','teacher', id, 'حذف مدرس: '+(t?t.name:id));
+}
+
+/* ---------------- استيراد/تصدير المدرسين (CSV) ---------------- */
+const TEACHERS_CSV_HEADER = ['الاسم','المادة','سعر الطالب','التليفون','نسبة الاستحقاق %','ملاحظات','الحالة','الرصيد الحالي (حساب الشريك)'];
+function csvEscapeField(val){
+  const s = String(val==null ? '' : val);
+  if(/[",\n\r]/.test(s)) return '"' + s.replace(/"/g,'""') + '"';
+  return s;
+}
+function parseCsvLine(line){
+  const result = [];
+  let cur = '', inQuotes = false;
+  for(let i=0;i<line.length;i++){
+    const c = line[i];
+    if(inQuotes){
+      if(c === '"'){
+        if(line[i+1] === '"'){ cur += '"'; i++; } else { inQuotes = false; }
+      } else cur += c;
+    } else {
+      if(c === '"') inQuotes = true;
+      else if(c === ','){ result.push(cur); cur=''; }
+      else cur += c;
+    }
+  }
+  result.push(cur);
+  return result;
+}
+function teachersToCsv(){
+  // كل الخانات اللي بتتملى في بروفايل المدرس (الاسم، المادة، سعر الطالب، نسبة الاستحقاق، التليفون،
+  // الملاحظات) بالإضافة لحالة المدرس ورصيد حسابه الحالي كبيانات إضافية للمرجعية (مش بتتستورد تاني،
+  // لأنها إما محسوبة تلقائي أو محتاجة تأكيد قبل ما تتغيّر). بيتصدّر كل المدرسين حتى المحذوفين (غير النشطين).
+  const rows = DB.teachers.map(t=>[
+    t.name, t.subject, t.ratePerChild, t.phone||'', t.sharePercent??0, t.notes||'',
+    t.active? 'نشط' : 'غير نشط (محذوف)',
+    teacherBalance(t.id)
+  ]);
+  return [TEACHERS_CSV_HEADER, ...rows].map(r=>r.map(csvEscapeField).join(',')).join('\r\n');
+}
+function exportTeachersCsv(){
+  if(!DB || !DB.teachers || !DB.teachers.length){ toast('مفيش مدرسين لتصديرهم'); return; }
+  const csv = '﻿' + teachersToCsv(); // BOM عشان إكسل يعرض العربي صح
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'المدرسين.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+async function importTeachersCsv(file){
+  if(!file) return;
+  if(!requirePerm('teachers')) return;
+  let text;
+  try{ text = await file.text(); }catch(e){ toast('فشل قراءة الملف'); return; }
+  const lines = text.replace(/^﻿/,'').split(/\r\n|\n/).filter(l=>l.trim().length);
+  if(lines.length<2){ toast('الملف فاضي أو مفيش صفوف بيانات فيه'); return; }
+  let added=0, failed=0;
+  for(let i=1;i<lines.length;i++){
+    const cols = parseCsvLine(lines[i]);
+    const [name, subject, rate, phone, sharePercent, notes] = cols;
+    if(!name || !subject || rate===undefined || rate===''){ failed++; continue; }
+    const id = await addTeacher(name, subject, rate, phone||'', notes||'', sharePercent||0);
+    if(id) added++; else failed++;
+  }
+  toast('تم استيراد '+added+' مدرس'+(failed? (' - فشل '+failed+' سطر'):''));
+  render();
+}
+async function addScheduleSlot(teacherId, hallId, daysArray, startTime, endTime, repeatEndDate, gradeLevelRaw){
+  if(!requirePerm('teachers')) return;
+  const days = (daysArray||[]).map(d=>parseInt(d,10)).filter(d=>!isNaN(d));
+  if(!days.length){ toast('اختار يوم واحد على الأقل'); return; }
+  const endDate = repeatEndDate ? repeatEndDate : null;
+  const gradeLevel = gradeLevelRaw || null;
+  for(const dayOfWeek of days){
+    const obj = { teacherId, hallId, dayOfWeek, startTime, endTime, endDate, gradeLevel };
+    try{ const saved = await dbInsert('weekly_schedule', obj); DB.weeklySchedule.push(saved); }
+    catch(e){ toast('فشل حفظ يوم '+ARABIC_DAYS[dayOfWeek]+': '+e.message); }
+  }
+}
+async function deleteScheduleSlotById(id){
+  if(!requirePerm('teachers')) return;
+  try{ await dbDelete('weekly_schedule', id); }catch(e){ toast('فشل الحذف: '+e.message); return; }
+  DB.weeklySchedule = DB.weeklySchedule.filter(w=>w.id!==id);
+}
+
+/* ---------------- Business logic: sessions (appointments) ---------------- */
+async function ensureSessionsForDate(dateStr){
+  const dow = arabicWeekdayFromISO(dateStr);
+  const existingScheduleIds = new Set(DB.sessions.filter(s=>s.sessionDate===dateStr && s.scheduleId).map(s=>s.scheduleId));
+  const slots = DB.weeklySchedule.filter(w=>w.dayOfWeek===dow && (!w.endDate || dateStr<=w.endDate));
+  for(const slot of slots){
+    if(existingScheduleIds.has(slot.id)) continue;
+    if(!can('sessions')) continue;
+    const teacher = teacherById(slot.teacherId);
+    // لو الموعد الأسبوعي محدد له مرحلة سنية، بتتحط تلقائي كافتراضي للحصة (والسعر بيتحسب على أساسها)،
+    // لكن تفضل قابلة للتغيير يوم بيوم من الصفحة الرئيسية زي أي حصة عادية. لو الموعد من غير مرحلة محددة،
+    // السلوك زي الأول بالظبط (بدون مرحلة، السعر العام).
+    const rate = teacherRateForGrade(teacher, slot.gradeLevel);
+    // عدد الطلاب بيتحدد يوم بيوم من الصفحة الرئيسية نفسها، مش من الموعد الأسبوعي الثابت
+    const obj = { sessionDate:dateStr, dayOfWeek:dow, startTime:slot.startTime, endTime:slot.endTime, hallId:slot.hallId, teacherId:slot.teacherId, childrenCount:null, ratePerChild:rate, gradeLevel:slot.gradeLevel||null, amountDue:null, status:'pending', collectedAmount:null, cancelReason:null, postponedToDate:null, isAdhoc:false, scheduleId:slot.id, notes:'' };
+    try{ const saved = await dbInsert('sessions', obj); DB.sessions.push(saved); }
+    catch(e){ /* غالبًا تكرار من توليد متزامن على جهاز تاني - نتجاهله */ }
+  }
+}
+function sessionsForDate(dateStr){
+  return DB.sessions.filter(s=>s.sessionDate===dateStr).sort((a,b)=>(a.startTime||'').localeCompare(b.startTime||''));
+}
+async function addAdhocSession(dateStr, hallId, teacherId, childrenCountRaw, startTime, ratePerChildRaw, gradeLevelRaw){
+  if(!requirePerm('sessions')) return;
+  const children = parseInt(childrenCountRaw,10);
+  if(!hallId){ toast('اختار مدرج'); return; }
+  if(isNaN(children) || children<0){ toast('عدد الطلاب غير صحيح'); return; }
+  const teacher = teacherById(teacherId);
+  const gradeLevel = gradeLevelRaw || null;
+  // سعر الطالب بيتحدد افتراضيًا من سعر المرحلة السنية المختارة عند المدرس (أو سعره العام لو المرحلة
+  // مش محددة)، لكن ممكن تتعدل هنا لحصة بسعر مختلف (استثناء لحصة بعينها)
+  let rate = teacherRateForGrade(teacher, gradeLevel);
+  if(ratePerChildRaw!==undefined && ratePerChildRaw!==null && ratePerChildRaw!==''){
+    const overriddenRate = parseFloat(ratePerChildRaw);
+    if(isNaN(overriddenRate) || overriddenRate<0){ toast('سعر الطالب غير صحيح'); return; }
+    rate = overriddenRate;
+  }
+  const amountDue = Math.round(children*rate*100)/100;
+  const obj = { sessionDate:dateStr, dayOfWeek:arabicWeekdayFromISO(dateStr), startTime, endTime:null, hallId, teacherId, childrenCount:children, ratePerChild:rate, gradeLevel, amountDue, status:'pending', collectedAmount:null, cancelReason:null, postponedToDate:null, isAdhoc:true, scheduleId:null, notes:'' };
+  try{ const saved = await dbInsert('sessions', obj); DB.sessions.push(saved); }
+  catch(e){ toast('فشل الحفظ: '+e.message); return; }
+}
+async function updateSessionChildren(sessionId, valueRaw){
+  if(!requirePerm('sessions')){ render(); return; }
+  const s = DB.sessions.find(x=>x.id===sessionId); if(!s) return;
+  const children = parseInt(valueRaw,10);
+  if(isNaN(children) || children<0){ toast('عدد الطلاب غير صحيح'); render(); return; }
+  const amountDue = Math.round(children*(s.ratePerChild||0)*100)/100;
+  const patch = { childrenCount:children, amountDue };
+  try{ await dbUpdate('sessions', sessionId, patch); }catch(e){ toast('فشل الحفظ: '+e.message); render(); return; }
+  Object.assign(s, patch);
+  render();
+}
+// تغيير المرحلة السنية لحصة معيّنة (بتتحدد يوم بيوم زي عدد الطلاب بالظبط) — بيحدّث سعر الطالب
+// تلقائي حسب سعر المرحلة دي عند المدرس، وبيعيد حساب المبلغ المتوقع لو عدد الطلاب اتحدد فعلًا.
+async function updateSessionGrade(sessionId, gradeKeyRaw){
+  if(!requirePerm('sessions')){ render(); return; }
+  const s = DB.sessions.find(x=>x.id===sessionId); if(!s) return;
+  const gradeLevel = gradeKeyRaw || null;
+  const teacher = teacherById(s.teacherId);
+  const rate = teacherRateForGrade(teacher, gradeLevel);
+  const amountDue = s.childrenCount!=null ? Math.round((s.childrenCount||0)*rate*100)/100 : s.amountDue;
+  const patch = { gradeLevel, ratePerChild:rate, amountDue };
+  try{ await dbUpdate('sessions', sessionId, patch); }catch(e){ toast('فشل الحفظ: '+e.message); render(); return; }
+  Object.assign(s, patch);
+  render();
+}
+async function collectSession(id, amount, note){
+  if(!requirePerm('sessions')) return;
+  const s = DB.sessions.find(x=>x.id===id); if(!s) return;
+  const patch = { status:'collected', collectedAmount:amount };
+  if(note){ patch.notes = note; }
+  try{ await dbUpdate('sessions', id, patch); }catch(e){ toast('فشل: '+e.message); return; }
+  Object.assign(s, patch);
+  const hall = hallById(s.hallId);
+  const tx = { ttype:'income', amount, ttdate:todayISO(), description:'تحصيل حصة: '+teacherName(s.teacherId)+' — '+s.sessionDate, relatedSessionId:id, relatedTeacherId:null, centerId: hall? hall.centerId : null };
+  try{ const saved = await dbInsert('treasury_transactions', tx); DB.treasury.push(saved); }
+  catch(e){ toast('اتحصّلت الحصة، بس حصل خطأ في تسجيل الخزينة: '+e.message); }
+  const teacher = teacherById(s.teacherId);
+  if(teacher && teacher.sharePercent>0){
+    const due = Math.round(amount*teacher.sharePercent/100*100)/100;
+    if(due>0){
+      const entry = { teacherId:s.teacherId, entryType:'credit', amount:due, entryDate:todayISO(), description:'استحقاق حصة يوم '+s.sessionDate+' ('+teacher.sharePercent+'%)', relatedSessionId:id, relatedExpenseId:null };
+      try{ const saved = await dbInsert('teacher_ledger', entry); DB.teacherLedger.push(saved); }
+      catch(e){ toast('اتحصّلت الحصة، بس حصل خطأ في تسجيل استحقاق المدرس: '+e.message); }
+    }
+  }
+  await logAudit('collect','session', id, 'حصّل حصة يوم '+s.sessionDate+' للمدرس '+teacherName(s.teacherId)+' بمبلغ '+fmt2(amount)+' ج.م'+(note?(' — ملاحظة: '+note):''));
+  toast('تم التحصيل');
+}
+async function cancelSession(id, reasonKey, customText, postponeDate){
+  if(!requirePerm('sessions')) return;
+  const s = DB.sessions.find(x=>x.id===id); if(!s) return;
+  const isPostpone = reasonKey==='تأجيل لموعد تاني';
+  const reasonText = reasonKey==='سبب تاني' ? (customText||'').trim() : reasonKey;
+  const patch = { status:'cancelled', cancelReason:reasonText, postponedToDate: isPostpone ? postponeDate : null };
+  try{ await dbUpdate('sessions', id, patch); }catch(e){ toast('فشل: '+e.message); return; }
+  Object.assign(s, patch);
+  if(isPostpone && postponeDate){
+    const obj = { sessionDate:postponeDate, dayOfWeek:arabicWeekdayFromISO(postponeDate), startTime:s.startTime, endTime:s.endTime, hallId:s.hallId, teacherId:s.teacherId, childrenCount:s.childrenCount, ratePerChild:s.ratePerChild, gradeLevel:s.gradeLevel||null, amountDue:s.amountDue, status:'pending', collectedAmount:null, cancelReason:null, postponedToDate:null, isAdhoc:true, scheduleId:null, notes:'مؤجلة من '+s.sessionDate };
+    try{ const saved = await dbInsert('sessions', obj); DB.sessions.push(saved); }
+    catch(e){ toast('اتلغت الحصة، بس حصل خطأ في إنشاء الموعد الجديد: '+e.message); }
+  }
+  await logAudit('cancel','session', id, (isPostpone?'أجّل':'ألغى')+' حصة يوم '+s.sessionDate+' للمدرس '+teacherName(s.teacherId)+(isPostpone&&postponeDate?(' لـ '+postponeDate):'')+' — السبب: '+reasonText);
+  toast('تم الإلغاء');
+}
+
+/* ---------------- Business logic: treasury / expenses ---------------- */
+function treasuryTotals(centerId){
+  let income=0, expense=0;
+  DB.treasury.forEach(t=>{
+    if(centerId && t.centerId!==centerId) return; // فلترة بالسنتر (الفرع) لو محدد
+    if(t.ttype==='income'){ income+=t.amount; return; }
+    // المصروف اللي لسه بانتظار موافقة الشريك أو اتّرفض منه، مبيتحسبش لحد ما يتوافق عليه فعلًا
+    const status = t.approvalStatus || 'approved';
+    if(status==='approved'){ expense+=t.amount; }
+  });
+  const balance = income-expense;
+  // مستحق الشركاء دايمًا إجمالي لكل الفروع (المدرس بيشتغل في أي سنتر، مش مربوط بسنتر معين)
+  const partnersDue = DB.teachers.reduce((sum,t)=> sum + Math.max(0, teacherBalance(t.id)), 0);
+  // رصيد السنتر = الرصيد الكلي بعد ما نجنّب اللي مستحق للمدرسين ولسه ما اتصرفش
+  const centerBalance = balance - partnersDue;
+  return { income, expense, balance, partnersDue, centerBalance };
+}
+// عدد الأيام اللي مصروف "بانتظار الموافقة" فضل معلّق فيها من غير رد فعل من الشريك
+function pendingExpenseAgeDays(tx){
+  if(!tx.createdAt) return 0;
+  const created = new Date(tx.createdAt).getTime();
+  if(isNaN(created)) return 0;
+  return Math.floor((Date.now()-created)/86400000);
+}
+function isStalePendingExpense(tx){
+  return (tx.approvalStatus||'approved')==='pending' && pendingExpenseAgeDays(tx)>=STALE_PENDING_DAYS;
+}
+async function addExpense(amount, ttdate, description, teacherId, centerId, lineItems){
+  if(!requirePerm('expenses')) return;
+  // لو المصروف مرتبط بمدرس (شريك) عنده حساب دخول مرتبط بيه، لازم هو (أو الأدمن) يوافق عليه
+  // الأول قبل ما يتخصم فعليًا من حسابه — غير كده بيتسجل معتمد على طول زي أي مصروف عادي.
+  const linked = teacherId ? await teacherHasLinkedLogin(teacherId) : false;
+  const approvalStatus = linked ? 'pending' : 'approved';
+  // lineItems (اختياري): مصفوفة {description, amount} لو المصروف ده اتسجل كعناصر/بنود متعددة
+  // بدل مبلغ واحد — المبلغ الكلي already بيمثّل مجموعها (اتحسب في الواجهة قبل الإرسال).
+  const obj = { ttype:'expense', amount, ttdate, description, relatedSessionId:null, relatedTeacherId: teacherId||null, centerId: centerId||null, approvalStatus, lineItems: (lineItems && lineItems.length) ? lineItems : null };
+  let saved;
+  try{ saved = await dbInsert('treasury_transactions', obj); DB.treasury.push(saved); }
+  catch(e){ toast('فشل الحفظ: '+e.message); return; }
+  if(teacherId && approvalStatus==='approved'){
+    const entry = { teacherId, entryType:'debit', amount, entryDate:ttdate, description:'سحب/دفعة: '+(description||''), relatedSessionId:null, relatedExpenseId:saved.id };
+    try{ const savedEntry = await dbInsert('teacher_ledger', entry); DB.teacherLedger.push(savedEntry); }
+    catch(e){ toast('اتسجل المصروف، بس حصل خطأ في تحديث حساب المدرس: '+e.message); }
+  }
+  await logAudit('create','expense', saved.id, 'سجّل مصروف بمبلغ '+fmt2(amount)+' ج.م'+(teacherId?(' على '+teacherName(teacherId)):'')+(approvalStatus==='pending'?' (بانتظار الموافقة)':'')+' — '+(description||''));
+}
+async function approveExpense(id){
+  const tx = DB.treasury.find(t=>t.id===id);
+  if(!tx || tx.ttype!=='expense') return;
+  const isOwner = SESSION && SESSION.profile.teacherId && SESSION.profile.teacherId===tx.relatedTeacherId;
+  const isAdmin = SESSION && SESSION.profile.role==='admin';
+  if(!isOwner && !isAdmin){ toast('مينفعش توافق على مصروف مش بتاعك'); return; }
+  try{ await dbUpdate('treasury_transactions', id, { approvalStatus:'approved' }); }
+  catch(e){ toast('فشل: '+e.message); return; }
+  tx.approvalStatus = 'approved';
+  const entry = { teacherId: tx.relatedTeacherId, entryType:'debit', amount:tx.amount, entryDate:tx.ttdate, description:'سحب/دفعة: '+(tx.description||''), relatedSessionId:null, relatedExpenseId:tx.id };
+  try{ const savedEntry = await dbInsert('teacher_ledger', entry); DB.teacherLedger.push(savedEntry); }
+  catch(e){ toast('اتعمد المصروف، بس حصل خطأ في تحديث حساب المدرس: '+e.message); return; }
+  await logAudit('approve','expense', id, 'وافق على مصروف بمبلغ '+fmt2(tx.amount)+' ج.م'+(tx.relatedTeacherId?(' على '+teacherName(tx.relatedTeacherId)):''));
+  toast('تمت الموافقة على المصروف');
+}
+async function rejectExpense(id){
+  const tx = DB.treasury.find(t=>t.id===id);
+  if(!tx || tx.ttype!=='expense') return;
+  const isOwner = SESSION && SESSION.profile.teacherId && SESSION.profile.teacherId===tx.relatedTeacherId;
+  const isAdmin = SESSION && SESSION.profile.role==='admin';
+  if(!isOwner && !isAdmin){ toast('مينفعش ترفض مصروف مش بتاعك'); return; }
+  try{ await dbUpdate('treasury_transactions', id, { approvalStatus:'rejected' }); }
+  catch(e){ toast('فشل: '+e.message); return; }
+  tx.approvalStatus = 'rejected';
+  await logAudit('reject','expense', id, 'رفض مصروف بمبلغ '+fmt2(tx.amount)+' ج.م'+(tx.relatedTeacherId?(' على '+teacherName(tx.relatedTeacherId)):''));
+  toast('تم رفض المصروف');
+}
+function expenseApprovalBadgeHtml(tx){
+  const status = tx.approvalStatus || 'approved';
+  if(status==='pending'){
+    return isStalePendingExpense(tx)
+      ? '<span class="badge unpaid">⚠ بانتظار موافقة الشريك — متأخر ('+pendingExpenseAgeDays(tx)+' يوم)</span>'
+      : '<span class="badge partial">بانتظار موافقة الشريك</span>';
+  }
+  if(status==='rejected') return '<span class="badge unpaid">مرفوض من الشريك</span>';
+  return '<span class="badge paid">معتمد</span>';
+}
+// لو مصروف اتسجل مقسّم لبنود (line_items)، بيوضح "تفاصيل" قابلة للفتح جنب بيانه فيها البنود وقيمتها.
+function expenseLineItemsDetailHtml(tx){
+  if(!tx.lineItems || !Array.isArray(tx.lineItems) || !tx.lineItems.length) return '';
+  const itemsHtml = tx.lineItems.map(it=>`<li>${escapeHtml(it.description||'بدون بيان')}: <b>${fmt2(it.amount||0)}</b> ج.م</li>`).join('');
+  return `<details class="expense-items-detail" style="margin-top:4px;"><summary style="cursor:pointer;color:var(--text-muted);font-size:12.5px;">${tx.lineItems.length} بنود (دوس للتفاصيل)</summary><ul style="margin:6px 0 0;padding-inline-start:18px;font-size:13px;">${itemsHtml}</ul></details>`;
+}
+async function deleteExpenseById(id){
+  if(!requirePerm('expenses_delete')) return;
+  const tx = DB.treasury.find(t=>t.id===id);
+  try{ await dbDelete('treasury_transactions', id); }catch(e){ toast('فشل الحذف: '+e.message); return; }
+  DB.treasury = DB.treasury.filter(t=>t.id!==id);
+  const linkedEntries = DB.teacherLedger.filter(l=>l.relatedExpenseId===id);
+  for(const l of linkedEntries){
+    try{ await dbDelete('teacher_ledger', l.id); }catch(e){}
+  }
+  DB.teacherLedger = DB.teacherLedger.filter(l=>l.relatedExpenseId!==id);
+  // لو المصروف ده كان صرف راتب أو سلفة موظف، احذف كل القيود المرتبطة بيه في حساب الموظف كمان
+  // (صرف راتب واحد ممكن يكون وراه أكتر من قيد: أساسي + مكافأة + خصم + تسوية سلفة)
+  const linkedEmployeeEntries = DB.employeeLedger.filter(l=>l.relatedExpenseId===id);
+  for(const l of linkedEmployeeEntries){
+    try{ await dbDelete('employee_ledger', l.id); }catch(e){}
+  }
+  DB.employeeLedger = DB.employeeLedger.filter(l=>l.relatedExpenseId!==id);
+  await logAudit('delete','expense', id, 'حذف مصروف بمبلغ '+fmt2(tx?tx.amount:0)+' ج.م — '+(tx?tx.description||'':''));
+}
+
+/* ---------------- Business logic: teacher accounts (partner ledger — مدين/دائن) ---------------- */
+function teacherLedgerEntries(teacherId){
+  return DB.teacherLedger.filter(l=>l.teacherId===teacherId).sort((a,b)=> (a.entryDate||'').localeCompare(b.entryDate||'') || (a.id||'').localeCompare(b.id||''));
+}
+function ledgerEntrySourceLabel(e){
+  return e.relatedSessionId ? 'تلقائي من حصة' : e.relatedExpenseId ? 'مرتبط بمصروف' : 'يدوي';
+}
+function teacherBalance(teacherId){
+  let bal = 0;
+  DB.teacherLedger.forEach(l=>{ if(l.teacherId===teacherId){ bal += l.entryType==='credit' ? l.amount : -l.amount; } });
+  return Math.round(bal*100)/100;
+}
+async function addManualLedgerEntry(teacherId, entryType, amountRaw, date, description){
+  if(!requirePerm('teachers')) return;
+  const amount = parseFloat(amountRaw);
+  if(isNaN(amount) || amount<=0){ toast('مبلغ غير صحيح'); return; }
+  if(entryType!=='credit' && entryType!=='debit'){ toast('نوع القيد غير صحيح'); return; }
+  const entry = { teacherId, entryType, amount, entryDate:date||todayISO(), description:(description||'').trim()||'قيد يدوي', relatedSessionId:null, relatedExpenseId:null };
+  try{ const saved = await dbInsert('teacher_ledger', entry); DB.teacherLedger.push(saved); toast('تم إضافة القيد'); }
+  catch(e){ toast('فشل الحفظ: '+e.message); return; }
+  await logAudit('create','ledger_entry', teacherId, 'أضاف قيد '+(entryType==='credit'?'دائن':'مدين')+' بمبلغ '+fmt2(amount)+' ج.م لحساب '+teacherName(teacherId)+' — '+entry.description);
+}
+async function settleTeacherBalance(teacherId, amountOverrideRaw){
+  const bal = teacherBalance(teacherId);
+  if(bal===0){ toast('حساب المدرس متزن بالفعل، مفيش حاجة تتسوى'); return; }
+  const entryType = bal>0 ? 'debit' : 'credit';
+  // المبلغ الافتراضي = كل المستحق، لكن ممكن المستخدم يعدّله لمبلغ جزئي (تسوية جزء بس) أو أكتر (تسوية زيادة)
+  const amount = (amountOverrideRaw!==undefined && amountOverrideRaw!==null && amountOverrideRaw!=='') ? parseFloat(amountOverrideRaw) : Math.abs(bal);
+  if(isNaN(amount) || amount<=0){ toast('مبلغ التسوية غير صحيح'); return; }
+  await addManualLedgerEntry(teacherId, entryType, amount, todayISO(), 'تسوية رصيد من الخزينة');
+}
+async function deleteLedgerEntry(id){
+  if(!requirePerm('teachers')) return;
+  const entry = DB.teacherLedger.find(l=>l.id===id);
+  if(!entry) return;
+  if(entry.relatedSessionId || entry.relatedExpenseId){ toast('القيد ده مرتبط بحصة أو مصروف — احذف المصدر نفسه بدل ما تحذف القيد'); return; }
+  try{ await dbDelete('teacher_ledger', id); }catch(e){ toast('فشل الحذف: '+e.message); return; }
+  DB.teacherLedger = DB.teacherLedger.filter(l=>l.id!==id);
+  await logAudit('delete','ledger_entry', entry.teacherId, 'حذف قيد من حساب '+teacherName(entry.teacherId)+' بمبلغ '+fmt2(entry.amount)+' ج.م');
+}
+
+/* ---------------- Business logic: employees (بروفايل) ---------------- */
+async function addEmployee(name, jobTitle, baseSalaryRaw, phone, notes){
+  if(!requirePerm('employees')) return null;
+  name=(name||'').trim(); if(!name) return null;
+  const baseSalary = parseFloat(baseSalaryRaw);
+  if(isNaN(baseSalary) || baseSalary<0){ toast('المرتب الأساسي غير صحيح'); return null; }
+  const obj = { name, jobTitle:(jobTitle||'').trim(), baseSalary, phone:phone||'', notes:notes||'', active:true };
+  try{ const saved = await dbInsert('employees', obj); DB.employees.push(saved); await logAudit('create','employee', saved.id, 'أضاف موظف: '+name); return saved.id; }
+  catch(e){ toast('فشل الحفظ: '+e.message); return null; }
+}
+async function saveEmployeeData(id, name, jobTitle, baseSalaryRaw, phone, notes){
+  if(!requirePerm('employees')) return;
+  const baseSalary = parseFloat(baseSalaryRaw);
+  if(isNaN(baseSalary) || baseSalary<0){ toast('المرتب الأساسي غير صحيح'); return; }
+  const patch = { name:(name||'').trim(), jobTitle:(jobTitle||'').trim(), baseSalary, phone:phone||'', notes:notes||'' };
+  try{ await dbUpdate('employees', id, patch); }catch(e){ toast('فشل الحفظ: '+e.message); return; }
+  const emp=employeeById(id); if(emp) Object.assign(emp,patch);
+  await logAudit('update','employee', id, 'عدّل بيانات موظف: '+patch.name);
+}
+async function deleteEmployeeById(id){
+  if(!requirePerm('employees')) return;
+  const emp=employeeById(id);
+  try{ await dbUpdate('employees', id, {active:false}); }catch(e){ toast('فشل: '+e.message); return; }
+  if(emp) emp.active=false;
+  await logAudit('delete','employee', id, 'حذف موظف: '+(emp?emp.name:id));
+}
+
+/* ---------------- Business logic: حساب الموظف (راتب/سلفة/مكافأة/خصم) ---------------- */
+function employeeLedgerEntries(employeeId){
+  return DB.employeeLedger.filter(l=>l.employeeId===employeeId).sort((a,b)=> (a.entryDate||'').localeCompare(b.entryDate||'') || (a.id||'').localeCompare(b.id||''));
+}
+// السلفة المستحقة على الموظف (لسه ما اتسوتش من راتب) = مجموع السلف (والقيود المدينة
+// اليدوية) ناقص مجموع تسويات السلف (والقيود الدائنة اليدوية). موجب = عليه سلفة للسنتر.
+function employeeAdvanceBalance(employeeId){
+  let bal = 0;
+  DB.employeeLedger.forEach(l=>{
+    if(l.employeeId!==employeeId) return;
+    if(l.entryType==='advance' || l.entryType==='debit') bal += l.amount;
+    else if(l.entryType==='advance_settle' || l.entryType==='credit') bal -= l.amount;
+  });
+  return Math.round(bal*100)/100;
+}
+async function addManualEmployeeLedgerEntry(employeeId, entryType, amountRaw, date, description){
+  if(!requirePerm('employees')) return;
+  const amount = parseFloat(amountRaw);
+  if(isNaN(amount) || amount<=0){ toast('مبلغ غير صحيح'); return; }
+  if(entryType!=='credit' && entryType!=='debit'){ toast('نوع القيد غير صحيح'); return; }
+  const entry = { employeeId, entryType, amount, entryDate:date||todayISO(), description:(description||'').trim()||'قيد يدوي', relatedExpenseId:null };
+  try{ const saved = await dbInsert('employee_ledger', entry); DB.employeeLedger.push(saved); toast('تم إضافة القيد'); }
+  catch(e){ toast('فشل الحفظ: '+e.message); return; }
+  await logAudit('create','employee_ledger_entry', employeeId, 'أضاف قيد '+(entryType==='credit'?'دائن':'مدين')+' بمبلغ '+fmt2(amount)+' ج.م لحساب '+employeeName(employeeId)+' — '+entry.description);
+}
+async function deleteEmployeeLedgerEntry(id){
+  if(!requirePerm('employees')) return;
+  const entry = DB.employeeLedger.find(l=>l.id===id);
+  if(!entry) return;
+  if(entry.relatedExpenseId){ toast('القيد ده مرتبط بمعاملة خزينة (راتب/سلفة) — احذف المعاملة نفسها من الخزينة بدل ما تحذف القيد'); return; }
+  try{ await dbDelete('employee_ledger', id); }catch(e){ toast('فشل الحذف: '+e.message); return; }
+  DB.employeeLedger = DB.employeeLedger.filter(l=>l.id!==id);
+  await logAudit('delete','employee_ledger_entry', entry.employeeId, 'حذف قيد من حساب '+employeeName(entry.employeeId)+' بمبلغ '+fmt2(entry.amount)+' ج.م');
+}
+// صرف راتب: المرتب الأساسي + مكافأة اختيارية - خصم اختياري - تسوية سلفة سابقة اختيارية
+// (بحد أقصى السلفة المستحقة فعلاً) = صافي المبلغ اللي بيتسجل كمصروف واحد في الخزينة.
+async function payEmployeeSalary(employeeId, baseAmountRaw, bonusAmountRaw, bonusDesc, deductionAmountRaw, deductionDesc, advanceSettleAmountRaw, payDate, description){
+  if(!requirePerm('employees')) return;
+  const emp = employeeById(employeeId);
+  if(!emp){ toast('الموظف غير موجود'); return; }
+  const base = parseFloat(baseAmountRaw); if(isNaN(base) || base<0){ toast('المرتب الأساسي غير صحيح'); return; }
+  let bonus = parseFloat(bonusAmountRaw); if(isNaN(bonus) || bonus<0) bonus = 0;
+  let deduction = parseFloat(deductionAmountRaw); if(isNaN(deduction) || deduction<0) deduction = 0;
+  let advanceSettle = parseFloat(advanceSettleAmountRaw); if(isNaN(advanceSettle) || advanceSettle<0) advanceSettle = 0;
+  const outstandingAdvance = employeeAdvanceBalance(employeeId);
+  if(advanceSettle > outstandingAdvance + 0.001){ toast('المبلغ المطلوب تسويته من السلفة أكبر من السلفة المستحقة فعلاً ('+fmt2(outstandingAdvance)+' ج.م)'); return; }
+  const netAmount = Math.round((base + bonus - deduction - advanceSettle)*100)/100;
+  if(netAmount < 0){ toast('صافي الراتب مينفعش يبقى بالسالب — قلّل الخصم أو مبلغ تسوية السلفة'); return; }
+  const date = payDate || todayISO();
+  const desc = (description||'').trim();
+  let txnId = null;
+  if(netAmount > 0){
+    const tx = { ttype:'expense', amount:netAmount, ttdate:date, description:'صرف راتب: '+emp.name+(desc?(' — '+desc):''), relatedSessionId:null, relatedTeacherId:null, employeeId, centerId:null, approvalStatus:'approved' };
+    try{ const saved = await dbInsert('treasury_transactions', tx); DB.treasury.push(saved); txnId = saved.id; }
+    catch(e){ toast('فشل تسجيل صرف الراتب: '+e.message); return; }
+  }
+  const entriesToAdd = [];
+  if(base>0) entriesToAdd.push({ employeeId, entryType:'salary', amount:base, entryDate:date, description:'مرتب أساسي'+(desc?(' — '+desc):''), relatedExpenseId:txnId });
+  if(bonus>0) entriesToAdd.push({ employeeId, entryType:'bonus', amount:bonus, entryDate:date, description:(bonusDesc||'').trim()||'مكافأة', relatedExpenseId:txnId });
+  if(deduction>0) entriesToAdd.push({ employeeId, entryType:'deduction', amount:deduction, entryDate:date, description:(deductionDesc||'').trim()||'خصم', relatedExpenseId:txnId });
+  if(advanceSettle>0) entriesToAdd.push({ employeeId, entryType:'advance_settle', amount:advanceSettle, entryDate:date, description:'تسوية سلفة من الراتب', relatedExpenseId:txnId });
+  for(const entry of entriesToAdd){
+    try{ const saved = await dbInsert('employee_ledger', entry); DB.employeeLedger.push(saved); }
+    catch(e){ toast('اتسجل صرف الراتب، بس حصل خطأ في تحديث حساب الموظف: '+e.message); }
+  }
+  await logAudit('create','employee_salary', employeeId, 'صرف راتب لـ '+emp.name+' — صافي '+fmt2(netAmount)+' ج.م (أساسي '+fmt2(base)+(bonus>0?', مكافأة '+fmt2(bonus):'')+(deduction>0?', خصم '+fmt2(deduction):'')+(advanceSettle>0?', تسوية سلفة '+fmt2(advanceSettle):'')+')');
+  toast('تم صرف الراتب');
+}
+async function giveEmployeeAdvance(employeeId, amountRaw, advanceDate, description){
+  if(!requirePerm('employees')) return;
+  const emp = employeeById(employeeId);
+  if(!emp){ toast('الموظف غير موجود'); return; }
+  const amount = parseFloat(amountRaw);
+  if(isNaN(amount) || amount<=0){ toast('مبلغ السلفة غير صحيح'); return; }
+  const date = advanceDate || todayISO();
+  const desc = (description||'').trim();
+  const tx = { ttype:'expense', amount, ttdate:date, description:'سلفة: '+emp.name+(desc?(' — '+desc):''), relatedSessionId:null, relatedTeacherId:null, employeeId, centerId:null, approvalStatus:'approved' };
+  let saved;
+  try{ saved = await dbInsert('treasury_transactions', tx); DB.treasury.push(saved); }
+  catch(e){ toast('فشل تسجيل السلفة: '+e.message); return; }
+  const entry = { employeeId, entryType:'advance', amount, entryDate:date, description: desc||'سلفة', relatedExpenseId:saved.id };
+  try{ const savedEntry = await dbInsert('employee_ledger', entry); DB.employeeLedger.push(savedEntry); }
+  catch(e){ toast('اتسجلت السلفة في الخزينة، بس حصل خطأ في تحديث حساب الموظف: '+e.message); }
+  await logAudit('create','employee_advance', employeeId, 'صرف سلفة لـ '+emp.name+' بمبلغ '+fmt2(amount)+' ج.م');
+  toast('تم صرف السلفة');
+}
+
+/* ---------------- Reports ---------------- */
+// كشف حساب شامل للمدرس: بيدمج تفاصيل الحصص (تاريخ، مرحلة، عدد طلاب، حالة، مبلغ محصّل، استحقاق
+// المدرس منها) مع حركة حسابه المالي (قيود مدين/دائن) في نفس الفترة، بالإضافة لرصيد افتتاحي
+// (كل القيود قبل "من تاريخ") ورصيد ختامي — عشان يوضح بالظبط المدرس مستحق له كام أو عليه كام.
+function computeStatement(teacherId, from, to){
+  const sess = DB.sessions.filter(s=>s.teacherId===teacherId && s.sessionDate>=from && s.sessionDate<=to).sort((a,b)=>a.sessionDate.localeCompare(b.sessionDate));
+  const collected = sess.filter(s=>s.status==='collected');
+  const cancelled = sess.filter(s=>s.status==='cancelled');
+  const pending = sess.filter(s=>s.status==='pending');
+  const totalCollected = collected.reduce((a,s)=>a+(s.collectedAmount||0),0);
+  const totalChildren = collected.reduce((a,s)=>a+(s.childrenCount||0),0);
+
+  const allLedger = teacherLedgerEntries(teacherId); // مرتبة بالتاريخ تصاعدي بالفعل
+  // استحقاق المدرس من كل حصة (لو اتحصّلت) بيتسجل تلقائي كقيد دائن مرتبط بالحصة — نربطهم هنا
+  // عشان نوضح جنب كل حصة قد إيه استحقاق المدرس منها (مش بس المبلغ المحصّل من الطالب).
+  const sessionCreditById = {};
+  allLedger.forEach(l=>{ if(l.relatedSessionId) sessionCreditById[l.relatedSessionId] = l.amount; });
+  const totalTeacherShare = collected.reduce((a,s)=> a + (sessionCreditById[s.id]||0), 0);
+
+  const openingBalance = allLedger.filter(l=>l.entryDate<from).reduce((bal,l)=> bal + (l.entryType==='credit'? l.amount : -l.amount), 0);
+  const periodEntries = allLedger.filter(l=> l.entryDate>=from && l.entryDate<=to);
+  let running = openingBalance;
+  const ledgerRows = periodEntries.map(l=>{
+    running += l.entryType==='credit' ? l.amount : -l.amount;
+    return Object.assign({}, l, { runningBalance: running });
+  });
+  const periodCredit = periodEntries.filter(l=>l.entryType==='credit').reduce((a,l)=>a+l.amount,0);
+  const periodDebit = periodEntries.filter(l=>l.entryType==='debit').reduce((a,l)=>a+l.amount,0);
+  const closingBalance = openingBalance + periodCredit - periodDebit;
+
+  return { sessions:sess, collected, cancelled, pending, totalCollected, totalChildren, sessionCreditById,
+    totalTeacherShare, openingBalance, ledgerRows, periodCredit, periodDebit, closingBalance };
+}
+
+/* ---------------- تقرير الأرباح والخسائر (شهري + أسبوعي) ---------------- */
+const ARABIC_MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+function arabicMonthLabel(key){
+  const [y,m] = key.split('-').map(Number);
+  return (ARABIC_MONTHS[m-1]||key)+' '+y;
+}
+function lastNMonthKeys(n){
+  const keys = [];
+  const now = new Date();
+  for(let i=n-1;i>=0;i--){
+    const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+    keys.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'));
+  }
+  return keys;
+}
+// بداية الأسبوع (السبت) اللي بيقع فيه التاريخ ده — الأسبوع هنا سبت→جمعة زي باقي النظام (ARABIC_DAYS).
+function weekStartISO(dateStr){
+  const dow = arabicWeekdayFromISO(dateStr); // 0=سبت .. 6=جمعة
+  return addDaysISO(dateStr, -dow);
+}
+function lastNWeekKeys(n){
+  const keys = [];
+  const curStart = weekStartISO(todayISO());
+  for(let i=n-1;i>=0;i--){ keys.push(addDaysISO(curStart, -7*i)); }
+  return keys;
+}
+function weekLabel(startKey){
+  const endKey = addDaysISO(startKey, 6);
+  const short = iso=>{ const [,m,d]=iso.split('-'); return d+'/'+m; };
+  return short(startKey)+' – '+short(endKey);
+}
+// صافي الربح للفترة = التحصيل - المصروفات المعتمدة - مستحقات المدرسين اللي اتحقت في نفس الفترة (استحقاق
+// المدرس بيتحسب تكلفة على السنتر وقت ما يتسجل، مش وقت ما يتسوى فعليًا — عشان الرقم يعكس الربح الحقيقي).
+// لو فيه فلترة بسنتر معيّن، مستحقات المدرسين بتتشال من الحساب خالص (المدرس مش مربوط بسنتر معين أصلًا).
+// دالة عامة بتتقسم على فترات (شهور أو أسابيع) — بتاخد قايمة مفاتيح الفترة ودالة بتحوّل تاريخ لمفتاح فترة.
+function pnlSeriesForPeriods(centerId, periodKeys, dateToKeyFn){
+  const filtered = !!centerId;
+  const byPeriod = {};
+  periodKeys.forEach(p=> byPeriod[p] = { period:p, income:0, expense:0, teacherShare:0 });
+  DB.treasury.forEach(t=>{
+    if(filtered && t.centerId!==centerId) return;
+    const p = dateToKeyFn(t.ttdate);
+    if(!byPeriod[p]) return; // برّه نطاق الفترات المعروضة، متجاهلينه
+    if(t.ttype==='income'){ byPeriod[p].income += t.amount; }
+    else if((t.approvalStatus||'approved')==='approved'){ byPeriod[p].expense += t.amount; }
+  });
+  if(!filtered){
+    DB.teacherLedger.forEach(l=>{
+      if(l.entryType!=='credit') return;
+      const p = dateToKeyFn(l.entryDate);
+      if(!byPeriod[p]) return;
+      byPeriod[p].teacherShare += l.amount;
+    });
+  }
+  let prevNet = null;
+  return periodKeys.map(p=>{
+    const row = byPeriod[p];
+    const net = filtered ? (row.income-row.expense) : (row.income-row.expense-row.teacherShare);
+    const delta = prevNet==null? null : Math.round((net-prevNet)*100)/100;
+    prevNet = net;
+    return Object.assign({}, row, { net:Math.round(net*100)/100, delta, filtered });
+  });
+}
+function monthlyPnlData(centerId){
+  const months = lastNMonthKeys(12);
+  return pnlSeriesForPeriods(centerId, months, d=>(d||'').slice(0,7))
+    .map(r=> ({ month:r.period, income:r.income, expense:r.expense, teacherShare:r.teacherShare, net:r.net, delta:r.delta, filtered:r.filtered }));
+}
+function weeklyPnlData(centerId){
+  const weeks = lastNWeekKeys(12);
+  return pnlSeriesForPeriods(centerId, weeks, d=> d? weekStartISO(d) : '')
+    .map(r=> ({ week:r.period, income:r.income, expense:r.expense, teacherShare:r.teacherShare, net:r.net, delta:r.delta, filtered:r.filtered }));
+}
+function setPnlFilterCenter(centerId){ pnlFilterCenterId = centerId||''; render(); }
+function setPnlPeriod(period){ pnlPeriod = (period==='weekly') ? 'weekly' : 'monthly'; render(); }
+// رسم بياني عام (أعمدة تحصيل/مصروفات + خط صافي الربح) — SVG يدوي بدون أي مكتبة خارجية، عشان الملف يفضل مكتفي بذاته.
+function financeChartSvg(rows, opts){
+  opts = opts||{};
+  if(!rows || !rows.length) return '<p class="hint">لا يوجد بيانات كافية لعرض الرسم البياني.</p>';
+  const W = 900, H = opts.height||260, padL=52, padR=14, padT=16, padB=52;
+  const innerW = W-padL-padR, innerH = H-padT-padB;
+  const n = rows.length;
+  const allVals = rows.reduce((a,r)=>a.concat([r.income,r.expense,r.net]),[]);
+  let maxV = Math.max(0, ...allVals), minV = Math.min(0, ...allVals);
+  if(maxV===minV){ maxV += 1; minV -= 1; }
+  const range = (maxV-minV) || 1;
+  const yOf = v => padT + innerH - ((v-minV)/range)*innerH;
+  const zeroY = yOf(0);
+  const slotW = innerW/n;
+  const barW = Math.max(4, Math.min(18, slotW*0.28));
+  const gridCount = 4;
+  let gridHtml = '';
+  for(let i=0;i<=gridCount;i++){
+    const v = minV + (range*i/gridCount);
+    const y = yOf(v);
+    gridHtml += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W-padR}" y2="${y.toFixed(1)}" stroke="var(--border)" stroke-width="1" stroke-dasharray="3,3"/>`;
+    gridHtml += `<text x="${padL-8}" y="${(y+3.5).toFixed(1)}" font-size="10" fill="var(--text-muted)" text-anchor="end">${fmt2(v)}</text>`;
+  }
+  let barsHtml = '', xLabelsHtml = '';
+  const linePts = [];
+  rows.forEach((r,i)=>{
+    const cx = padL + slotW*i + slotW/2;
+    const xInc = cx - barW - 2, xExp = cx + 2;
+    const yInc = Math.min(yOf(r.income), zeroY), hInc = Math.max(1, Math.abs(yOf(r.income)-zeroY));
+    const yExp = Math.min(yOf(r.expense), zeroY), hExp = Math.max(1, Math.abs(yOf(r.expense)-zeroY));
+    barsHtml += `<rect x="${xInc.toFixed(1)}" y="${yInc.toFixed(1)}" width="${barW.toFixed(1)}" height="${hInc.toFixed(1)}" fill="var(--success)" rx="2"><title>${escapeHtml(r.label)} — تحصيل: ${fmt2(r.income)}</title></rect>`;
+    barsHtml += `<rect x="${xExp.toFixed(1)}" y="${yExp.toFixed(1)}" width="${barW.toFixed(1)}" height="${hExp.toFixed(1)}" fill="var(--danger)" rx="2"><title>${escapeHtml(r.label)} — مصروفات: ${fmt2(r.expense)}</title></rect>`;
+    linePts.push([cx, yOf(r.net)]);
+    xLabelsHtml += `<text x="${cx.toFixed(1)}" y="${(H-padB+18).toFixed(1)}" font-size="10" fill="var(--text-muted)" text-anchor="middle" transform="rotate(-35 ${cx.toFixed(1)} ${(H-padB+18).toFixed(1)})">${escapeHtml(r.label)}</text>`;
+  });
+  const linePath = linePts.map((p,i)=> (i===0?'M':'L')+p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+  const areaPath = linePts.length ? (linePath + ` L${linePts[linePts.length-1][0].toFixed(1)},${zeroY.toFixed(1)} L${linePts[0][0].toFixed(1)},${zeroY.toFixed(1)} Z`) : '';
+  const netLabel = opts.filtered ? 'صافي التدفق النقدي' : 'صافي الربح';
+  const lineHtml = `<path d="${areaPath}" fill="url(#pnlGrad)" opacity="0.2"/>`
+    + `<path d="${linePath}" fill="none" stroke="var(--gold)" stroke-width="2.5"/>`
+    + linePts.map((p,i)=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5" fill="var(--gold)"><title>${escapeHtml(rows[i].label)} — ${netLabel}: ${fmt2(rows[i].net)}</title></circle>`).join('');
+  const zeroLineHtml = (minV<0 && maxV>0) ? `<line x1="${padL}" y1="${zeroY.toFixed(1)}" x2="${W-padR}" y2="${zeroY.toFixed(1)}" stroke="var(--text-muted)" stroke-width="1"/>` : '';
+  return `
+  <div style="overflow-x:auto;">
+  <svg viewBox="0 0 ${W} ${H}" style="width:100%;min-width:560px;height:${H}px;display:block;" preserveAspectRatio="xMinYMin meet">
+    <defs><linearGradient id="pnlGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--gold)"/><stop offset="100%" stop-color="var(--gold)" stop-opacity="0"/></linearGradient></defs>
+    ${gridHtml}
+    ${zeroLineHtml}
+    ${barsHtml}
+    ${lineHtml}
+    ${xLabelsHtml}
+  </svg>
+  </div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;margin-top:8px;color:var(--text-muted);">
+    <span><span style="display:inline-block;width:10px;height:10px;background:var(--success);border-radius:2px;margin-inline-end:4px;vertical-align:middle;"></span> تحصيل</span>
+    <span><span style="display:inline-block;width:10px;height:10px;background:var(--danger);border-radius:2px;margin-inline-end:4px;vertical-align:middle;"></span> مصروفات</span>
+    <span><span style="display:inline-block;width:10px;height:2px;background:var(--gold);margin-inline-end:4px;vertical-align:middle;"></span> ${netLabel}</span>
+  </div>`;
+}
+function deltaBadgeHtml(delta){
+  if(delta==null) return '<span class="hint">—</span>';
+  if(delta>0) return '<span class="badge paid">▲ '+fmt2(delta)+'</span>';
+  if(delta<0) return '<span class="badge unpaid">▼ '+fmt2(Math.abs(delta))+'</span>';
+  return '<span class="badge neutral">= 0.00</span>';
+}
+
+/* ---------------- تصدير Excel عام (صيغة SpreadsheetML — بتفتح في Excel/Sheets من غير أي مكتبة خارجية) ---------------- */
+function xmlEscape(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function excelRowXml(cells){
+  return '<Row>'+cells.map(c=>{
+    const isNum = typeof c === 'number' && isFinite(c);
+    return isNum ? ('<Cell><Data ss:Type="Number">'+c+'</Data></Cell>') : ('<Cell><Data ss:Type="String">'+xmlEscape(c)+'</Data></Cell>');
+  }).join('')+'</Row>';
+}
+function buildExcelWorksheetXml(sheetName, headerRow, dataRows){
+  return ' <Worksheet ss:Name="'+xmlEscape(sheetName).slice(0,31)+'">\n  <Table>\n   '
+    + excelRowXml(headerRow) + '\n   ' + dataRows.map(excelRowXml).join('\n   ')
+    + '\n  </Table>\n </Worksheet>';
+}
+function buildExcelXml(sheetName, headerRow, dataRows){
+  return '<?xml version="1.0"?>\n<?mso-application progid="Excel.Sheet"?>\n'
+    + '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">\n'
+    + buildExcelWorksheetXml(sheetName, headerRow, dataRows)
+    + '\n</Workbook>';
+}
+// زي buildExcelXml لكن بيدعم أكتر من ورقة (شيت) في نفس ملف الإكسل — sheets = [{name, headerRow, dataRows}, ...]
+function buildExcelXmlMultiSheet(sheets){
+  return '<?xml version="1.0"?>\n<?mso-application progid="Excel.Sheet"?>\n'
+    + '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">\n'
+    + sheets.map(sh=>buildExcelWorksheetXml(sh.name, sh.headerRow, sh.dataRows)).join('\n')
+    + '\n</Workbook>';
+}
+function downloadExcelBlob(filename, xml){
+  const blob = new Blob(['﻿'+xml], {type:'application/vnd.ms-excel;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+function downloadExcelFile(filename, sheetName, headerRow, dataRows){
+  downloadExcelBlob(filename, buildExcelXml(sheetName, headerRow, dataRows));
+}
+function downloadExcelFileMultiSheet(filename, sheets){
+  downloadExcelBlob(filename, buildExcelXmlMultiSheet(sheets));
+}
+function exportPnlExcel(){
+  const centerId = pnlFilterCenterId||'';
+  const rows = monthlyPnlData(centerId);
+  const filtered = !!centerId;
+  const header = filtered
+    ? ['الشهر','التحصيل','المصروفات المعتمدة','صافي التدفق النقدي']
+    : ['الشهر','التحصيل','المصروفات المعتمدة','مستحقات المدرسين المستحقة','صافي الربح'];
+  const dataRows = rows.map(r=> filtered
+    ? [arabicMonthLabel(r.month), r.income, r.expense, r.net]
+    : [arabicMonthLabel(r.month), r.income, r.expense, r.teacherShare, r.net]
+  );
+  downloadExcelFile('تقرير-الأرباح-والخسائر-شهري.xls', 'تقرير شهري', header, dataRows);
+}
+function exportWeeklyPnlExcel(){
+  const centerId = pnlFilterCenterId||'';
+  const rows = weeklyPnlData(centerId);
+  const filtered = !!centerId;
+  const header = filtered
+    ? ['الأسبوع','التحصيل','المصروفات المعتمدة','صافي التدفق النقدي']
+    : ['الأسبوع','التحصيل','المصروفات المعتمدة','مستحقات المدرسين المستحقة','صافي الربح'];
+  const dataRows = rows.map(r=> filtered
+    ? [weekLabel(r.week), r.income, r.expense, r.net]
+    : [weekLabel(r.week), r.income, r.expense, r.teacherShare, r.net]
+  );
+  downloadExcelFile('تقرير-الأرباح-والخسائر-أسبوعي.xls', 'تقرير أسبوعي', header, dataRows);
+}
+function exportTeacherStatementExcel(){
+  if(!reportsState.teacherId) return;
+  const from = reportsState.from || (todayISO().slice(0,8)+'01');
+  const to = reportsState.to || todayISO();
+  const t = teacherById(reportsState.teacherId);
+  const st = computeStatement(reportsState.teacherId, from, to);
+  const sessionsSheet = {
+    name: 'الحصص',
+    headerRow: ['التاريخ','المرحلة','الطلاب','الحالة','المبلغ المحصّل','استحقاق المدرس'],
+    dataRows: st.sessions.map(s=> [
+      s.sessionDate,
+      s.gradeLevel? gradeLabel(s.gradeLevel) : 'بدون تحديد',
+      s.childrenCount!=null? s.childrenCount : '',
+      s.status==='collected'?'محصّلة':s.status==='cancelled'?(s.postponedToDate?'مؤجلة':'ملغاة'):'لسه',
+      s.status==='collected'? (s.collectedAmount||0) : '',
+      st.sessionCreditById[s.id]!=null ? st.sessionCreditById[s.id] : ''
+    ])
+  };
+  const ledgerSheet = {
+    name: 'حركة الحساب',
+    headerRow: ['التاريخ','البيان','المصدر','دائن','مدين','الرصيد بعد الحركة'],
+    dataRows: st.ledgerRows.map(e=> [
+      e.entryDate, e.description||'', ledgerEntrySourceLabel(e),
+      e.entryType==='credit'? e.amount : '', e.entryType==='debit'? e.amount : '', e.runningBalance
+    ])
+  };
+  downloadExcelFileMultiSheet('كشف-حساب-'+(t?t.name:'مدرس')+'.xls', [sessionsSheet, ledgerSheet]);
+}
+
+/* ---------------- تحديث تلقائي خفيف كل شوية وانت في الرئيسية ---------------- */
+setInterval(async ()=>{
+  if(SESSION && !modalState && document.visibilityState==='visible' && currentView==='dashboard'){
+    try{ await loadAllTablesFromSupabase(); await beforeRenderPrep(); render(); }catch(e){}
+  }
+}, 30000);
+
+/* ---------------- Render prep ---------------- */
+async function beforeRenderPrep(){
+  if(currentView==='dashboard'){ await ensureSessionsForDate(selectedDate); }
+  else if(currentView==='settings'){
+    await refreshUsersList();
+    if(SESSION && (SESSION.profile.role==='admin' || can('audit_log'))){ await loadAuditLog(); }
+  }
+}
+
+/* ---------------- Views ---------------- */
+function optionsHtml(list, selectedId){
+  return list.map(x=>'<option value="'+x.id+'" '+(x.id===selectedId?'selected':'')+'>'+escapeHtml(x.name)+'</option>').join('');
+}
+
+function connectScreenHtml(){
+  return `
+  <div class="setup-wrap">
+    <div class="setup-card" style="max-width:440px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px;">
+        <div class="brand-mark" style="width:44px;height:44px;">س</div>
+        <div>
+          <h1 style="margin:0;font-size:18px;color:var(--primary-dark);">الاتصال بقاعدة البيانات</h1>
+          <div style="font-size:12px;color:var(--text-muted);">${escapeHtml(currentSystemName())} — أونلاين</div>
+        </div>
+      </div>
+      <p class="hint" style="margin-bottom:16px;">حط بيانات الاتصال بمشروع Supabase بتاعك (من Project Settings → API)</p>
+      <form data-form="connectSupa">
+        <div class="field"><label>رابط المشروع (Project URL)</label><input type="text" name="url" placeholder="https://xxxx.supabase.co" value="${escapeHtml(SUPA.url||DEFAULT_SUPABASE_URL)}" required></div>
+        <div class="field"><label>anon public key</label><input type="text" name="key" placeholder="eyJhbGciOi..." value="${escapeHtml(SUPA.key||DEFAULT_SUPABASE_KEY)}" required></div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;">اتصال</button>
+      </form>
+    </div>
+  </div>`;
+}
+
+function authScreenHtml(){
+  return `
+  <div class="setup-wrap">
+    <div class="setup-card" style="max-width:420px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+        <div class="brand-mark" style="width:44px;height:44px;">س</div>
+        <div>
+          <h1 style="margin:0;font-size:18px;color:var(--primary-dark);">${escapeHtml(currentSystemName())}</h1>
+          <div style="font-size:12px;color:var(--text-muted);">نظام الإدارة — أونلاين</div>
+        </div>
+      </div>
+      <form data-form="doLogin">
+        <div class="field"><label>اسم المستخدم</label><input type="text" name="username" autocomplete="username" required></div>
+        <div class="field"><label>كلمة المرور</label><input type="password" name="password" autocomplete="current-password" required></div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;">دخول</button>
+      </form>
+      <p class="hint" style="text-align:center;margin-top:12px;">مفيش تسجيل حساب من هنا — لازم مديرك يضيفلك حساب من "الإعدادات ← إضافة مستخدمين".</p>
+      <button class="btn btn-outline btn-sm" style="width:100%;justify-content:center;margin-top:8px;" data-action="back-to-connect">⟵ رجوع لبيانات الاتصال</button>
+    </div>
+  </div>`;
+}
+
+function navTabsList(){
+  const flat = [];
+  flat.push(['dashboard','الرئيسية', TAB_PERM.dashboard, null]);
+  const dropdownItems = [
+    ['centers','السناتر', TAB_PERM.centers],
+    ['teachers','المدرسين', TAB_PERM.teachers],
+    ['employees','الموظفين', TAB_PERM.employees],
+    ['reports','التقارير', TAB_PERM.reports],
+  ].filter(([id,label,perm])=>can(perm));
+  if(dropdownItems.length){ flat.push(['__dropdown__','السنتر', null, dropdownItems]); }
+  flat.push(['treasury','الخزينة', TAB_PERM.treasury, null]);
+  flat.push(['expenses','مصروفات السنتر', TAB_PERM.expenses, null]);
+  let tabs = flat.filter(([id,label,perm])=> !perm || can(perm));
+  if(SESSION && SESSION.profile.teacherId){
+    const myPending = DB.treasury.filter(t=> t.ttype==='expense' && t.relatedTeacherId===SESSION.profile.teacherId && (t.approvalStatus||'approved')==='pending');
+    const hasStale = myPending.some(isStalePendingExpense);
+    const label = myPending.length>0 ? `${hasStale?'⚠ ':''}موافقاتي (${myPending.length})` : 'موافقاتي';
+    tabs = tabs.concat([['approvals', label, null, null]]);
+  }
+  if(SESSION && (SESSION.profile.role==='admin' || can('manage_users') || can('audit_log') || can('settings'))){
+    tabs = tabs.concat([['settings','الإعدادات', null, null]]);
+  }
+  return tabs;
+}
+
+function topbarHtml(){
+  const roleLabel = SESSION.profile.role==='admin' ? 'أدمن' : 'موظف';
+  const groupOf = { 'teacher-new':'teachers', 'teacher-edit':'teachers', 'employee-new':'employees', 'employee-edit':'employees' };
+  const activeGroup = groupOf[currentView] || currentView;
+  const tabs = navTabsList();
+  const dropdownIds = ['centers','teachers','employees','reports'];
+  return `<header class="topnav no-print">
+    <div class="topnav-brand">
+      <div class="brand-mark">س</div>
+      <div class="brand-titles">
+        <div class="brand-name">${escapeHtml(currentSystemName())}</div>
+        <div class="brand-sub">نظام الإدارة</div>
+      </div>
+    </div>
+    <nav class="topnav-menu">
+      ${tabs.map(([id,label,perm,items])=>{
+        if(id==='__dropdown__'){
+          const isActive = dropdownIds.includes(activeGroup);
+          return `<div class="topnav-item nav-dropdown-wrap ${navDropdownOpen?'open':''}">
+            <div class="topnav-btn ${isActive?'active':''}" data-action="toggle-nav-dropdown"><span>${label}</span><span class="chev">▾</span></div>
+            <div class="topnav-dropdown">
+              ${items.map(([iid,ilabel])=>`<div class="dropdown-item ${activeGroup===iid?'active':''}" data-action="nav" data-target="${iid}">${ilabel}</div>`).join('')}
+            </div>
+          </div>`;
+        }
+        return `<div class="topnav-item"><div class="topnav-btn ${activeGroup===id?'active':''}" data-action="nav" data-target="${id}"><span>${label}</span></div></div>`;
+      }).join('')}
+    </nav>
+    <div class="topnav-actions">
+      <span class="conn-pill">● أونلاين</span>
+      <div class="topnav-userbar">
+        <div style="min-width:0;text-align:left;">
+          <div style="font-size:12px;font-weight:600;color:#F3E9DC;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;">${escapeHtml(SESSION.profile.fullName||SESSION.profile.username)}</div>
+          <div style="font-size:10px;color:var(--sidebar-text);opacity:.7;">${roleLabel}</div>
+        </div>
+        <button class="btn btn-outline btn-icon" data-action="refresh-online" title="تحديث">⟳</button>
+        <button class="logout-btn" data-action="logout" title="تسجيل الخروج">⏻</button>
+      </div>
+    </div>
+  </header>`;
+}
+
+function sessionStatusCellHtml(s){
+  if(s.status==='collected'){
+    return `<span class="badge paid">تم التحصيل: ${fmt2(s.collectedAmount||0)} ج.م</span>${s.notes ? `<div class="hint" style="margin-top:4px;">${escapeHtml(s.notes)}</div>` : ''}`;
+  }
+  if(s.status==='cancelled'){
+    if(s.postponedToDate){
+      return `<span class="badge partial">مؤجلة إلى ${s.postponedToDate}</span>`;
+    }
+    return `<span class="badge unpaid">ملغاة: ${escapeHtml(s.cancelReason||'')}</span>`;
+  }
+  if(!can('sessions')) return '<span class="badge neutral">لسه</span>';
+  return `<div style="display:flex;gap:6px;flex-wrap:wrap;">
+    <button class="btn btn-success btn-sm" data-action="open-collect" data-id="${s.id}">تحصيل</button>
+    <button class="btn btn-danger-o btn-sm" data-action="open-cancel" data-id="${s.id}">إلغاء</button>
+  </div>`;
+}
+
+function dashboardView(){
+  const list = sessionsForDate(selectedDate);
+  const dayName = ARABIC_DAYS[arabicWeekdayFromISO(selectedDate)];
+  const totalChildren = list.reduce((a,s)=>a+(s.childrenCount||0),0);
+  const expectedTotal = list.reduce((a,s)=> a + (s.status!=='cancelled' ? (s.amountDue||0) : 0), 0);
+  const collectedTotal = list.filter(s=>s.status==='collected').reduce((a,s)=>a+(s.collectedAmount||0),0);
+  const cancelledCount = list.filter(s=>s.status==='cancelled').length;
+
+  return `
+  <div class="card">
+    <div class="card-head">
+      <h2>حصص يوم ${dayName} — ${selectedDate}</h2>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <button class="btn btn-outline btn-sm" data-action="date-prev">⟵ السابق</button>
+        <form data-form="gotoDate" style="display:flex;gap:6px;">
+          <input type="date" name="date" value="${selectedDate}" style="width:auto;">
+          <button class="btn btn-outline btn-sm">اذهب</button>
+        </form>
+        <button class="btn btn-outline btn-sm" data-action="date-next">التالي ⟶</button>
+        ${selectedDate!==todayISO() ? `<button class="btn btn-outline btn-sm" data-action="date-today">النهاردة</button>` : ''}
+        ${can('sessions') ? `<button class="btn btn-primary btn-sm" data-action="open-add-session">+ إضافة حصة</button>` : ''}
+      </div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="lbl">عدد الحصص</div><div class="val">${list.length}</div></div>
+      <div class="stat-card green"><div class="lbl">إجمالي الطلاب</div><div class="val">${totalChildren}</div></div>
+      <div class="stat-card gold"><div class="lbl">متوقع تحصيله</div><div class="val">${fmt2(expectedTotal)} ج.م</div></div>
+      <div class="stat-card rose"><div class="lbl">محصّل فعليًا</div><div class="val">${fmt2(collectedTotal)} ج.م</div></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>الوقت</th><th>المدرس</th><th>المادة</th><th>السنتر / المدرج</th><th>المرحلة</th><th>الطلاب</th><th>المتوقع</th><th>الحالة / الإجراء</th></tr></thead>
+        <tbody>
+        ${list.length? list.map(s=>`
+          <tr class="${s.status==='cancelled'?'row-cancelled':''}">
+            <td class="${s.status==='cancelled'?'strike':''}">${escapeHtml(s.startTime||'')}</td>
+            <td class="${s.status==='cancelled'?'strike':''}">${escapeHtml(teacherName(s.teacherId))}</td>
+            <td>${escapeHtml(teacherSubject(s.teacherId))}</td>
+            <td>${escapeHtml(hallCenterName(s.hallId))} / ${escapeHtml(hallName(s.hallId))}</td>
+            <td class="${s.status==='cancelled'?'strike':''}">${sessionGradeCellHtml(s)}</td>
+            <td class="${s.status==='cancelled'?'strike':''}">${
+              (s.status==='pending' && can('sessions'))
+                ? `<input type="number" min="0" value="${s.childrenCount??''}" placeholder="؟" style="width:64px;padding:6px 8px;" onchange="updateSessionChildren('${s.id}', this.value)">`
+                : (s.childrenCount??'—')
+            }</td>
+            <td class="tnum ${s.status==='cancelled'?'strike':''}">${s.amountDue!=null? fmt2(s.amountDue) : '—'}</td>
+            <td>${sessionStatusCellHtml(s)}</td>
+          </tr>`).join('') : `<tr><td colspan="8" class="empty-row">مفيش حصص في اليوم ده. لو مفيش مواعيد أسبوعية ثابتة، دوس "+ إضافة حصة".</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+// خانة المرحلة السنية لحصة في جدول الرئيسية — قايمة اختيار قابلة للتعديل وهي لسه pending (زي عدد
+// الطلاب بالظبط)، بتعرض بس المراحل اللي المدرس ده أصلًا محدد لها سعر في بروفايله.
+function sessionGradeCellHtml(s){
+  const teacher = teacherById(s.teacherId);
+  const grades = teacherGrades(teacher);
+  if(s.status!=='pending' || !can('sessions')){
+    return s.gradeLevel ? escapeHtml(gradeLabel(s.gradeLevel)) : '—';
+  }
+  if(!grades.length) return '<span class="hint">—</span>';
+  return `<select style="width:130px;padding:6px 8px;" onchange="updateSessionGrade('${s.id}', this.value)">
+    <option value="">بدون تحديد</option>
+    ${grades.map(g=>`<option value="${g.key}" ${s.gradeLevel===g.key?'selected':''}>${escapeHtml(g.label)}</option>`).join('')}
+  </select>`;
+}
+
+function centersView(){
+  const centers = DB.centers.filter(c=>c.active);
+  return `
+  <div class="card">
+    <div class="card-head"><h2>إضافة سنتر جديد</h2></div>
+    <form data-form="addCenter" style="display:flex;gap:8px;">
+      <input type="text" name="name" placeholder="اسم السنتر" required>
+      <button class="btn btn-primary">إضافة</button>
+    </form>
+  </div>
+  <div class="center-grid">
+    ${centers.length? centers.map(c=>{
+      const halls = DB.halls.filter(h=>h.centerId===c.id && h.active);
+      return `
+      <div class="center-card">
+        <h3><span>${escapeHtml(c.name)}</span>${can('centers')?`<button class="btn btn-danger-o btn-sm" data-action="delete-center" data-id="${c.id}">حذف السنتر</button>`:''}</h3>
+        ${halls.length? halls.map(h=>`
+          <div class="hall-chip">
+            <span>${escapeHtml(h.name)}</span>
+            <button class="btn btn-danger-o btn-sm" data-action="delete-hall" data-id="${h.id}">حذف</button>
+          </div>`).join('') : '<p class="hint" style="margin:0 0 8px;">لا يوجد مدرجات بعد</p>'}
+        <form data-form="addHall" data-id="${c.id}" style="display:flex;gap:6px;margin-top:10px;">
+          <input type="text" name="name" placeholder="اسم مدرج جديد" required>
+          <button class="btn btn-gold btn-sm">إضافة</button>
+        </form>
+      </div>`;
+    }).join('') : '<div class="empty"><h3>لا يوجد سناتر بعد</h3><p>ضيف أول سنتر من الفورم فوق.</p></div>'}
+  </div>`;
+}
+
+// المدرسين اللي ليهم أو عليهم استحقاق (رصيد مش صفر) يظهروا الأول، والأكبر مبلغًا الأعلى؛
+// المدرسين المتزنين (رصيد = صفر) بيفضلوا تحت كده.
+function teachersSortedByBalance(list){
+  return list.slice().sort((a,b)=>{
+    const balA = teacherBalance(a.id), balB = teacherBalance(b.id);
+    const nonZeroA = balA!==0, nonZeroB = balB!==0;
+    if(nonZeroA !== nonZeroB) return nonZeroA ? -1 : 1;
+    return Math.abs(balB) - Math.abs(balA);
+  });
+}
+// فلترة صفوف جدول المدرسين وقت الكتابة في خانة البحث — بيغيّر ظهور الصفوف مباشرة في الـDOM
+// من غير ما يعمل render() كامل، عشان مؤشر الكتابة في الخانة ميضيعش مع كل حرف.
+function filterTeachersRows(query){
+  const q = (query||'').trim().toLowerCase();
+  const rows = document.querySelectorAll('#teachersTableBody tr[data-search]');
+  let visibleCount = 0;
+  rows.forEach(tr=>{
+    const match = !q || (tr.getAttribute('data-search')||'').includes(q);
+    tr.style.display = match ? '' : 'none';
+    if(match) visibleCount++;
+  });
+  const noResultsRow = document.getElementById('teachersNoResultsRow');
+  if(noResultsRow) noResultsRow.style.display = (visibleCount===0 && rows.length>0) ? '' : 'none';
+}
+function teachersView(){
+  const list = teachersSortedByBalance(DB.teachers.filter(t=>t.active));
+  return `
+  <div class="card">
+    <div class="card-head">
+      <h2>قائمة المدرسين</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <input type="file" id="teachersImportFile" accept=".csv,text/csv" style="display:none" onchange="importTeachersCsv(this.files[0]); this.value='';">
+        <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('teachersImportFile').click()">استيراد CSV</button>
+        <button type="button" class="btn btn-outline btn-sm" onclick="exportTeachersCsv()">تصدير CSV</button>
+        <button class="btn btn-primary btn-sm" data-action="nav" data-target="teacher-new">+ إضافة مدرس</button>
+      </div>
+    </div>
+    <p class="hint" style="margin-top:-8px;">ملف التصدير فيه كل خانات بروفايل المدرس: الاسم، المادة، سعر الطالب، التليفون، نسبة الاستحقاق %، ملاحظات — بالإضافة لعمودين للمرجعية بس (الحالة ورصيد حساب الشريك الحالي)، وبيصدّر كل المدرسين حتى المحذوفين. ملف الاستيراد محتاج أول 6 أعمدة بنفس الترتيب ده (الاسم، المادة، سعر الطالب، التليفون، نسبة الاستحقاق %، ملاحظات) — أي أعمدة زيادة بعدها بيتم تجاهلها، وأول سطر عنوان بيتجاهل تلقائي.</p>
+    <p class="hint" style="margin-top:-4px;">المدرسين اللي ليهم أو عليهم استحقاق (مش متزنين) بيظهروا فوق القائمة الأول، والأكبر مبلغًا الأعلى.</p>
+    <div class="field" style="max-width:320px;"><label>بحث</label><input type="text" placeholder="دوّر بالاسم أو المادة أو التليفون" oninput="filterTeachersRows(this.value)"></div>
+    <div class="table-wrap">
+    <table><thead><tr><th>الاسم</th><th>المادة</th><th>سعر الطالب</th><th>المراحل السنية</th><th>التليفون</th><th>الرصيد (حساب الشريك)</th><th></th></tr></thead>
+    <tbody id="teachersTableBody">${list.length? list.map(t=>{
+      const bal = teacherBalance(t.id);
+      const balHtml = bal>0 ? `<span class="badge unpaid">مستحق له ${fmt2(bal)} ج.م</span>` : bal<0 ? `<span class="badge paid">عليه ${fmt2(-bal)} ج.م</span>` : `<span class="badge neutral">متزن</span>`;
+      const grades = teacherGrades(t);
+      const gradesHtml = grades.length ? escapeHtml(grades.map(g=>g.label).join('، ')) : '<span class="hint">كل المراحل (سعر عام)</span>';
+      const searchHay = (t.name+' '+t.subject+' '+(t.phone||'')).toLowerCase();
+      return `
+      <tr data-action="edit-teacher" data-id="${t.id}" data-search="${escapeHtml(searchHay)}" style="cursor:pointer;" title="دوس لتعديل بيانات المدرس وحسابه">
+        <td>${escapeHtml(t.name)}</td><td>${escapeHtml(t.subject)}</td><td class="tnum">${fmt2(t.ratePerChild)} ج.م</td><td>${gradesHtml}</td><td>${escapeHtml(t.phone||'-')}</td><td>${balHtml}</td>
+        <td>
+          <button class="btn btn-danger-o btn-sm" data-action="delete-teacher" data-id="${t.id}">حذف</button>
+        </td>
+      </tr>`;
+    }).join('') + `<tr id="teachersNoResultsRow" style="display:none;"><td colspan="7" class="empty-row">مفيش مدرسين مطابقين للبحث</td></tr>` : '<tr><td colspan="7" class="empty-row">لا يوجد مدرسين بعد</td></tr>'}</tbody></table>
+    </div>
+  </div>`;
+}
+
+// جدول اختيار المراحل السنية اللي المدرس بيدرّسها + سعر الطالب الخاص بكل مرحلة (اختياري لكل مرحلة —
+// لو مرحلة مش متعلّم عليها، الحصص بالمرحلة دي هتاخد السعر العام فوق).
+function teacherGradeRatesFieldsHtml(teacher){
+  const rows = GRADE_LEVELS.map(g=>{
+    const existingRate = teacher && teacher.gradeRates ? teacher.gradeRates[g.key] : undefined;
+    const checked = existingRate!=null;
+    const rateValue = existingRate!=null ? existingRate : (teacher? teacher.ratePerChild : '');
+    return `<tr>
+      <td><input type="checkbox" name="grade_keys" value="${g.key}" ${checked?'checked':''}></td>
+      <td>${escapeHtml(g.label)}</td>
+      <td><input type="number" step="0.01" min="0" name="rate_${g.key}" value="${rateValue}" style="width:110px;"></td>
+    </tr>`;
+  }).join('');
+  return `
+  <div class="field">
+    <label>المراحل السنية اللي المدرس بيدرّسها (اختياري)</label>
+    <p class="hint" style="margin-top:-2px;">علّم على أي مرحلة المدرس بيدرّسها وحدد سعر الطالب الخاص بيها — لو سيبتها كلها من غير تعليم، كل حصصه هتاخد السعر العام فوق مهما كانت المرحلة.</p>
+    <div class="table-wrap"><table><thead><tr><th>بيدرّسها؟</th><th>المرحلة</th><th>سعر الطالب</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>
+  </div>`;
+}
+function teacherFormView(teacherId){
+  const teacher = teacherId ? teacherById(teacherId) : null;
+  const slots = teacher ? DB.weeklySchedule.filter(w=>w.teacherId===teacherId) : [];
+  const activeHalls = DB.halls.filter(h=>h.active);
+  return `
+  ${teacher? teacherAccountCardHtml(teacher) : ''}
+  <div class="row2">
+    <div class="card">
+      <div class="card-head"><h2>${teacher? 'تعديل بيانات المدرس' : 'إضافة مدرس جديد'}</h2></div>
+      <form data-form="${teacher?'saveTeacher':'addTeacher'}" data-id="${teacher?teacher.id:''}">
+        <div class="field"><label>الاسم</label><input type="text" name="name" value="${teacher?escapeHtml(teacher.name):''}" required></div>
+        <div class="field"><label>المادة</label><input type="text" name="subject" value="${teacher?escapeHtml(teacher.subject):''}" required></div>
+        <div class="field"><label>سعر الطالب الواحد (بيتحصّل من ولي الأمر)</label><input type="number" step="0.01" min="0" name="rate_per_child" value="${teacher?teacher.ratePerChild:''}" required></div>
+        <div class="field"><label>نسبة استحقاق المدرس % (من كل حصة بتتحصّل)</label><input type="number" step="0.01" min="0" max="100" name="share_percent" value="${teacher?(teacher.sharePercent??0):0}"></div>
+        <div class="field"><label>التليفون</label><input type="text" name="phone" value="${teacher?escapeHtml(teacher.phone||''):''}"></div>
+        <div class="field"><label>ملاحظات</label><textarea name="notes" rows="3">${teacher?escapeHtml(teacher.notes||''):''}</textarea></div>
+        ${teacherGradeRatesFieldsHtml(teacher)}
+        <button class="btn btn-primary" style="width:100%;justify-content:center;">${teacher?'حفظ التعديلات':'إضافة المدرس'}</button>
+      </form>
+    </div>
+    ${teacher? `
+    <div class="card">
+      <div class="card-head"><h2>المواعيد الأسبوعية الثابتة</h2></div>
+      <p class="hint" style="margin-top:-6px;">المواعيد دي بتتولد تلقائي كل يوم في الصفحة الرئيسية.</p>
+      <form data-form="addSchedule" data-id="${teacher.id}">
+        <div class="field">
+          <label>أيام الأسبوع (اختار يوم أو أكتر — الموعد بيتكرر فيهم كل أسبوع)</label>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            ${ARABIC_DAYS.map((d,i)=>`<label style="display:flex;align-items:center;gap:5px;font-size:13px;font-weight:500;color:var(--text);background:var(--surface-2);padding:7px 12px;border-radius:8px;cursor:pointer;"><input type="checkbox" name="days" value="${i}"> ${d}</label>`).join('')}
+          </div>
+        </div>
+        <div class="row3">
+          <div class="field"><label>من الساعة</label><input type="time" name="start_time" required></div>
+          <div class="field"><label>إلى الساعة</label><input type="time" name="end_time"></div>
+          <div class="field"><label>المدرج</label><select name="hall_id" required>${activeHalls.map(h=>`<option value="${h.id}">${escapeHtml(centerName(h.centerId))} — ${escapeHtml(h.name)}</option>`).join('')}</select></div>
+        </div>
+        <div class="field">
+          <label>المرحلة السنية (اختياري)</label>
+          <select name="grade_level">
+            <option value="">بدون تحديد (السعر العام)</option>
+            ${teacherGrades(teacher).map(g=>`<option value="${g.key}">${escapeHtml(g.label)}</option>`).join('')}
+          </select>
+          <p class="hint" style="margin-top:4px;">لو حددت مرحلة، الحصص اللي بتتولد من الموعد ده هتاخد المرحلة والسعر بتاعها تلقائي — لكن تفضل قابلة للتغيير يوم بيوم من الصفحة الرئيسية زي أي حصة عادية. ${teacherGrades(teacher).length? '' : 'المدرس ده لسه ما حددلوش مراحل سنية في بروفايله فوق.'}</p>
+        </div>
+        <div class="field"><label>تاريخ يقف عنده تكرار الحصص (اختياري — سيبها فاضية عشان يستمر التكرار كل أسبوع من غير حد)</label><input type="date" name="repeat_end_date"></div>
+        <button class="btn btn-gold" style="width:100%;justify-content:center;">إضافة الموعد</button>
+      </form>
+      <p class="hint" style="margin-top:10px;">عدد الطلاب بيتحدد يوم بيوم من الصفحة الرئيسية نفسها، مش هنا.</p>
+      <div class="table-wrap">
+        <table><thead><tr><th>اليوم</th><th>الوقت</th><th>المدرج</th><th>المرحلة</th><th>يقف عند</th><th></th></tr></thead>
+        <tbody>${slots.length? slots.map(w=>`<tr><td>${ARABIC_DAYS[w.dayOfWeek]}</td><td>${escapeHtml(w.startTime)}${w.endTime?' - '+escapeHtml(w.endTime):''}</td><td>${escapeHtml(centerName(hallById(w.hallId)?hallById(w.hallId).centerId:null))} — ${escapeHtml(hallName(w.hallId))}</td><td>${w.gradeLevel?escapeHtml(gradeLabel(w.gradeLevel)):'<span class="hint">بدون تحديد</span>'}</td><td>${w.endDate?escapeHtml(w.endDate):'<span class="hint">مستمر</span>'}</td><td><button class="btn btn-danger-o btn-sm" data-action="delete-schedule" data-id="${w.id}">حذف</button></td></tr>`).join('') : '<tr><td colspan="6" class="empty-row">لسه مفيش مواعيد ثابتة للمدرس ده</td></tr>'}</tbody></table>
+      </div>
+    </div>` : ''}
+  </div>`;
+}
+
+function teacherAccountCardHtml(teacher){
+  const entries = teacherLedgerEntries(teacher.id);
+  const bal = teacherBalance(teacher.id);
+  const balHtml = bal>0 ? `<span class="badge unpaid">مستحق له ${fmt2(bal)} ج.م</span>` : bal<0 ? `<span class="badge paid">عليه للسنتر ${fmt2(-bal)} ج.م</span>` : `<span class="badge neutral">الحساب متزن</span>`;
+  let running = 0;
+  const rows = entries.map(e=>{
+    running += e.entryType==='credit' ? e.amount : -e.amount;
+    const source = ledgerEntrySourceLabel(e);
+    const canDelete = !e.relatedSessionId && !e.relatedExpenseId;
+    return `<tr>
+      <td>${e.entryDate}</td>
+      <td>${escapeHtml(e.description||'')}</td>
+      <td>${source}</td>
+      <td class="tnum">${e.entryType==='credit'? fmt2(e.amount) : '—'}</td>
+      <td class="tnum">${e.entryType==='debit'? fmt2(e.amount) : '—'}</td>
+      <td class="tnum">${fmt2(running)}</td>
+      <td>${canDelete? `<button class="btn btn-danger-o btn-sm" data-action="delete-ledger-entry" data-id="${e.id}">حذف</button>` : ''}</td>
+    </tr>`;
+  }).join('');
+  return `
+  <div class="card">
+    <div class="card-head">
+      <h2>حساب المدرس (شريك — مدين / دائن)</h2>
+      <div>${balHtml}</div>
+    </div>
+    <p class="hint" style="margin-top:-6px;">دائن = مستحق للمدرس (بيتضاف تلقائي بنسبة استحقاقه من كل حصة بتتحصّل). مدين = اتخصم من حسابه (بيتضاف تلقائي لما تختاره كـ"شريك" في مصروف، أو تسجّله يدوي هنا كسحب/تسوية).</p>
+    <form data-form="addLedgerEntry" data-id="${teacher.id}" style="margin-bottom:14px;">
+      <div class="row3">
+        <div class="field"><label>نوع القيد</label><select name="entry_type"><option value="debit">مدين (دفعة/سحب له)</option><option value="credit">دائن (مستحق له إضافي)</option></select></div>
+        <div class="field"><label>المبلغ</label><input type="number" step="0.01" min="0.01" name="amount" required></div>
+        <div class="field"><label>التاريخ</label><input type="date" name="entry_date" value="${todayISO()}"></div>
+      </div>
+      <div class="field"><label>البيان</label><input type="text" name="description" placeholder="مثال: رصيد افتتاحي / سحب نقدي"></div>
+      <button class="btn btn-gold btn-sm">إضافة قيد يدوي</button>
+    </form>
+    <div class="table-wrap">
+      <table><thead><tr><th>التاريخ</th><th>البيان</th><th>المصدر</th><th>دائن</th><th>مدين</th><th>الرصيد</th><th></th></tr></thead>
+      <tbody>${rows || '<tr><td colspan="7" class="empty-row">لا يوجد قيود بعد في حساب المدرس ده</td></tr>'}</tbody></table>
+    </div>
+  </div>`;
+}
+
+/* ---------------- قسم الموظفين (مرتبات وسلف — منفصل عن المدرسين) ---------------- */
+function employeesView(){
+  const list = DB.employees.filter(e=>e.active);
+  return `
+  <div class="card">
+    <div class="card-head">
+      <h2>قائمة الموظفين</h2>
+      <button class="btn btn-primary btn-sm" data-action="nav" data-target="employee-new">+ إضافة موظف</button>
+    </div>
+    <p class="hint" style="margin-top:-8px;">قسم منفصل عن "المدرسين" — للموظفين اللي بياخدوا مرتب شهري ثابت (بدل نسبة استحقاق من الحصص)، وممكن تدّيهم سلف تتخصم لاحقًا من الراتب.</p>
+    <div class="table-wrap">
+    <table><thead><tr><th>الاسم</th><th>الوظيفة</th><th>المرتب الأساسي</th><th>التليفون</th><th>سلفة مستحقة</th><th></th></tr></thead>
+    <tbody>${list.length? list.map(e=>{
+      const adv = employeeAdvanceBalance(e.id);
+      const advHtml = adv>0 ? `<span class="badge unpaid">عليه سلفة ${fmt2(adv)} ج.م</span>` : adv<0 ? `<span class="badge paid">له مستحق ${fmt2(-adv)} ج.م</span>` : `<span class="badge neutral">لا يوجد سلف</span>`;
+      return `
+      <tr data-action="edit-employee" data-id="${e.id}" style="cursor:pointer;" title="دوس لتعديل بيانات الموظف وحسابه">
+        <td>${escapeHtml(e.name)}</td><td>${escapeHtml(e.jobTitle||'-')}</td><td class="tnum">${fmt2(e.baseSalary)} ج.م</td><td>${escapeHtml(e.phone||'-')}</td><td>${advHtml}</td>
+        <td>
+          <button class="btn btn-danger-o btn-sm" data-action="delete-employee" data-id="${e.id}">حذف</button>
+        </td>
+      </tr>`;
+    }).join('') : '<tr><td colspan="6" class="empty-row">لا يوجد موظفين بعد</td></tr>'}</tbody></table>
+    </div>
+  </div>`;
+}
+function employeeFormView(employeeId){
+  const emp = employeeId ? employeeById(employeeId) : null;
+  return `
+  ${emp? employeeAccountCardHtml(emp) : ''}
+  <div class="card">
+    <div class="card-head"><h2>${emp? 'تعديل بيانات الموظف' : 'إضافة موظف جديد'}</h2></div>
+    <form data-form="${emp?'saveEmployee':'addEmployee'}" data-id="${emp?emp.id:''}">
+      <div class="field"><label>الاسم</label><input type="text" name="name" value="${emp?escapeHtml(emp.name):''}" required></div>
+      <div class="field"><label>الوظيفة</label><input type="text" name="job_title" value="${emp?escapeHtml(emp.jobTitle||''):''}" placeholder="مثال: سكرتيرة / إداري / عامل نظافة"></div>
+      <div class="field"><label>المرتب الأساسي الشهري</label><input type="number" step="0.01" min="0" name="base_salary" value="${emp?emp.baseSalary:''}" required></div>
+      <div class="field"><label>التليفون</label><input type="text" name="phone" value="${emp?escapeHtml(emp.phone||''):''}"></div>
+      <div class="field"><label>ملاحظات</label><textarea name="notes" rows="3">${emp?escapeHtml(emp.notes||''):''}</textarea></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;">${emp?'حفظ التعديلات':'إضافة الموظف'}</button>
+    </form>
+  </div>`;
+}
+const EMPLOYEE_LEDGER_TYPE_LABELS = {
+  salary:'راتب أساسي', bonus:'مكافأة', deduction:'خصم', advance:'سلفة',
+  advance_settle:'تسوية سلفة من الراتب', credit:'قيد يدوي (دائن)', debit:'قيد يدوي (مدين)'
+};
+function employeeAccountCardHtml(emp){
+  const entries = employeeLedgerEntries(emp.id);
+  const adv = employeeAdvanceBalance(emp.id);
+  const advHtml = adv>0 ? `<span class="badge unpaid">عليه سلفة ${fmt2(adv)} ج.م</span>` : adv<0 ? `<span class="badge paid">له مستحق ${fmt2(-adv)} ج.م</span>` : `<span class="badge neutral">لا يوجد سلف مستحقة</span>`;
+  const rows = entries.map(e=>{
+    const canDelete = !e.relatedExpenseId;
+    const isAdvanceUp = e.entryType==='advance' || e.entryType==='debit';
+    const isAdvanceDown = e.entryType==='advance_settle' || e.entryType==='credit';
+    return `<tr>
+      <td>${e.entryDate}</td>
+      <td>${EMPLOYEE_LEDGER_TYPE_LABELS[e.entryType]||e.entryType}</td>
+      <td>${escapeHtml(e.description||'')}</td>
+      <td class="tnum">${fmt2(e.amount)}</td>
+      <td class="tnum">${isAdvanceUp? '+'+fmt2(e.amount) : isAdvanceDown? '-'+fmt2(e.amount) : '—'}</td>
+      <td>${canDelete? `<button class="btn btn-danger-o btn-sm" data-action="delete-employee-ledger-entry" data-id="${e.id}">حذف</button>` : ''}</td>
+    </tr>`;
+  }).join('');
+  return `
+  <div class="card">
+    <div class="card-head">
+      <h2>حساب الموظف (راتب / سلفة)</h2>
+      <div>${advHtml}</div>
+    </div>
+    <p class="hint" style="margin-top:-6px;">المرتب الأساسي المسجّل في بروفايل الموظف: <strong>${fmt2(emp.baseSalary)} ج.م</strong>. عمود "أثره على السلفة" بيوضح بس تأثير القيد على السلفة المستحقة — قيود الراتب/المكافأة/الخصم مش بتأثر على السلفة، بس بتتسجل هنا للمرجعية.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+      <button type="button" class="btn btn-primary btn-sm" data-action="pay-salary" data-id="${emp.id}">صرف راتب</button>
+      <button type="button" class="btn btn-gold btn-sm" data-action="give-advance" data-id="${emp.id}">سلفة</button>
+    </div>
+    <form data-form="addEmployeeLedgerEntry" data-id="${emp.id}" style="margin-bottom:14px;">
+      <div class="row3">
+        <div class="field"><label>نوع القيد اليدوي</label><select name="entry_type"><option value="debit">مدين (زي سلفة يدوية)</option><option value="credit">دائن (زي تسوية سلفة يدوية)</option></select></div>
+        <div class="field"><label>المبلغ</label><input type="number" step="0.01" min="0.01" name="amount" required></div>
+        <div class="field"><label>التاريخ</label><input type="date" name="entry_date" value="${todayISO()}"></div>
+      </div>
+      <div class="field"><label>البيان</label><input type="text" name="description" placeholder="مثال: رصيد افتتاحي"></div>
+      <button class="btn btn-outline btn-sm">إضافة قيد يدوي</button>
+    </form>
+    <div class="table-wrap">
+      <table><thead><tr><th>التاريخ</th><th>النوع</th><th>البيان</th><th>المبلغ</th><th>أثره على السلفة</th><th></th></tr></thead>
+      <tbody>${rows || '<tr><td colspan="6" class="empty-row">لا يوجد حركات بعد في حساب الموظف ده</td></tr>'}</tbody></table>
+    </div>
+  </div>`;
+}
+
+function setTreasuryFilterCenter(centerId){ treasuryFilterCenterId = centerId||''; render(); }
+function treasuryView(){
+  const filterId = treasuryFilterCenterId||undefined;
+  const { income, expense, balance, partnersDue, centerBalance } = treasuryTotals(filterId);
+  const showCenterCol = hasMultipleCenters();
+  const centerFilterHtml = showCenterCol
+    ? `<div class="field" style="max-width:260px;margin-bottom:14px;"><label>فلترة بالسنتر (الفرع)</label><select onchange="setTreasuryFilterCenter(this.value)"><option value="">كل السناتر</option>${DB.centers.filter(c=>c.active).map(c=>`<option value="${c.id}" ${treasuryFilterCenterId===c.id?'selected':''}>${escapeHtml(c.name)}</option>`).join('')}</select></div>`
+    : '';
+  let list = DB.treasury.slice().sort((a,b)=> b.ttdate.localeCompare(a.ttdate));
+  if(filterId){ list = list.filter(t=>t.centerId===filterId); }
+  list = list.slice(0,300);
+  const canSettle = can('teachers');
+  // بس المدرسين اللي ليهم فلوس أو عليهم فلوس (مش المتزنين) — دول اللي فعلاً محتاجين تسوية
+  const partnersRows = DB.teachers.filter(t=>t.active && teacherBalance(t.id)!==0).map(t=>{
+    const bal = teacherBalance(t.id);
+    const balHtml = bal>0 ? `<span class="badge unpaid">مستحق له ${fmt2(bal)} ج.م</span>` : `<span class="badge paid">عليه ${fmt2(-bal)} ج.م</span>`;
+    return `<tr><td>${escapeHtml(t.name)}</td><td>${balHtml}</td><td>${canSettle ? `<button class="btn btn-outline btn-sm" data-action="settle-teacher" data-id="${t.id}">تسوية</button>` : ''}</td></tr>`;
+  }).join('');
+  // الموظفين اللي عليهم سلفة مستحقة لسه ما اتسوتش (كلها أو جزء منها) من راتب — للعرض بس، التسوية نفسها من صفحة الموظف وقت صرف الراتب
+  const canViewEmployees = can('employees');
+  const employeeAdvanceRows = canViewEmployees ? DB.employees.filter(e=>e.active && employeeAdvanceBalance(e.id)>0).map(e=>{
+    const adv = employeeAdvanceBalance(e.id);
+    return `<tr><td>${escapeHtml(e.name)}</td><td><span class="badge unpaid">عليه سلفة ${fmt2(adv)} ج.م</span></td></tr>`;
+  }).join('') : '';
+  const employeeAdvancesCardHtml = canViewEmployees ? `
+  <div class="card">
+    <div class="card-head"><h2>سلف الموظفين المستحقة</h2></div>
+    <p class="hint" style="margin-top:-6px;">الموظفين اللي أخدوا سلفة ولسه ما اتسوتش (كلها أو جزء منها) من راتب — التسوية بتتم من صفحة الموظف نفسه وقت "صرف راتب".</p>
+    <div class="table-wrap"><table><thead><tr><th>الموظف</th><th>السلفة المستحقة</th></tr></thead>
+    <tbody>${employeeAdvanceRows || '<tr><td colspan="2" class="empty-row">مفيش سلف مستحقة حاليًا</td></tr>'}</tbody></table></div>
+  </div>` : '';
+  return `
+  ${centerFilterHtml}
+  <div class="stat-grid">
+    <div class="stat-card rose"><div class="lbl">${filterId?'الرصيد (السنتر المحدد)':'الرصيد الكلي'}</div><div class="val">${fmt2(balance)} ج.م</div></div>
+    <div class="stat-card gold"><div class="lbl">رصيد السنتر (بعد خصم مستحقات المدرسين)</div><div class="val">${fmt2(centerBalance)} ج.م</div></div>
+    <div class="stat-card green"><div class="lbl">${filterId?'التحصيل (السنتر المحدد)':'إجمالي التحصيل'}</div><div class="val">${fmt2(income)} ج.م</div></div>
+    <div class="stat-card red"><div class="lbl">${filterId?'المصروفات (السنتر المحدد)':'إجمالي المصروفات'}</div><div class="val">${fmt2(expense)} ج.م</div></div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h2>الاتجاه المالي (آخر 12 أسبوع)</h2></div>
+    <p class="hint" style="margin-top:-6px;">تحصيل ومصروفات كل أسبوع (سبت→جمعة) ${filterId?'للسنتر المحدد فوق':'لكل السناتر'}، مع خط ${filterId?'صافي التدفق النقدي':'صافي الربح'}. لتفاصيل أكتر وتصدير Excel/PDF، شوف "التقارير".</p>
+    ${financeChartSvg(weeklyPnlData(filterId||'').map(r=>({label:weekLabel(r.week), income:r.income, expense:r.expense, net:r.net})), {filtered: !!filterId, height:230})}
+  </div>
+  <div class="card">
+    <div class="card-head"><h2>مستحق الشركاء (إجمالي: ${fmt2(partnersDue)} ج.م)</h2></div>
+    <p class="hint" style="margin-top:-6px;">مجموع مستحقات كل المدرسين (الشركاء) اللي لسه ما اتصرفتش — بتتخصم من الرصيد الكلي عشان تطلع رصيد السنتر الحقيقي فوق (القسم ده دايمًا إجمالي لكل الفروع، لأن المدرس مش مربوط بسنتر معين). القائمة تحت فيها بس اللي ليهم فلوس أو عليهم فلوس (المتزنين مش بيظهروا). لو عايز تصفّي حساب مدرس، دوس "تسوية" جنب اسمه.</p>
+    <div class="table-wrap"><table><thead><tr><th>المدرس</th><th>الرصيد</th><th></th></tr></thead>
+    <tbody>${partnersRows || '<tr><td colspan="3" class="empty-row">مفيش شركاء ليهم أو عليهم فلوس حاليًا — كل الحسابات متزنة</td></tr>'}</tbody></table></div>
+  </div>
+  ${employeeAdvancesCardHtml}
+  <div class="card">
+    <div class="card-head"><h2>سجل حركات الخزينة</h2></div>
+    <div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>النوع</th><th>المبلغ</th><th>البيان</th><th>الشريك / الموظف</th>${showCenterCol?'<th>السنتر</th>':''}<th>الحالة</th></tr></thead>
+    <tbody>${list.length? list.map(tx=>`<tr><td>${tx.ttdate}</td><td>${tx.ttype==='income'?'<span class="badge paid">تحصيل</span>':'<span class="badge unpaid">مصروف</span>'}</td><td class="tnum">${fmt2(tx.amount)}</td><td>${escapeHtml(tx.description||'-')}${expenseLineItemsDetailHtml(tx)}</td><td>${tx.relatedTeacherId? escapeHtml(teacherName(tx.relatedTeacherId)) : tx.employeeId? escapeHtml(employeeName(tx.employeeId)) : '-'}</td>${showCenterCol?`<td>${tx.centerId? escapeHtml(centerName(tx.centerId)) : '-'}</td>`:''}<td>${tx.ttype==='expense' ? expenseApprovalBadgeHtml(tx) : '-'}</td></tr>`).join('') : `<tr><td colspan="${showCenterCol?7:6}" class="empty-row">لا يوجد حركات مسجلة بعد</td></tr>`}</tbody></table></div>
+  </div>`;
+}
+
+function hasMultipleCenters(){ return DB.centers.filter(c=>c.active).length>1; }
+// سطر واحد في فورم "تسجيل مصروف جديد". prefill (اختياري) بيتحط منه المبلغ والبيان والشريك —
+// بيتستخدم لما تضيف سطر تاني عشان يتكرر فيه نفس المبلغ وسبب المصروف ونفس الشريك تلقائي من
+// آخر سطر (غالبًا بتسجل أكتر من مصروف بنفس التفاصيل لنفس الشريك)، لكن التاريخ والسنتر بيفضلوا
+// افتراضيين (مش بيتكرروا) في السطر الجديد.
+function expenseRowHtml(prefill){
+  prefill = prefill || {};
+  const activeCenters = DB.centers.filter(c=>c.active);
+  const centerFieldHtml = hasMultipleCenters()
+    ? `<div class="field"><label>السنتر (فرع، اختياري)</label><select name="center_id"><option value="">كل السناتر / بدون تحديد</option>${activeCenters.map(c=>`<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('')}</select></div>`
+    : '';
+  return `<div class="expense-row" style="border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px;position:relative;">
+      <div class="row3">
+        <div class="field"><label>المبلغ</label><input type="number" step="0.01" min="0" name="amount" class="expense-amount-input" value="${prefill.amount!=null && prefill.amount!==''?escapeHtml(String(prefill.amount)):''}" required></div>
+        <div class="field"><label>التاريخ</label><input type="date" name="ttdate" value="${todayISO()}" required></div>
+        <div class="field">
+          <label>الشريك (اختياري)</label>
+          <div class="teacher-search-wrap">
+            <input type="text" class="expense-teacher-search" placeholder="دوّر عن شريك... سيبها فاضية لمصروف عام" autocomplete="off" value="${prefill.teacherName?escapeHtml(prefill.teacherName):''}" oninput="renderExpenseTeacherDropdown(this)" onfocus="openExpenseTeacherDropdown(this)" onclick="openExpenseTeacherDropdown(this)" onblur="var _el=this;setTimeout(function(){closeExpenseTeacherDropdown(_el)},150)">
+            <div class="teacher-search-dropdown expense-teacher-dropdown" style="display:none;"></div>
+          </div>
+          <input type="hidden" name="teacher_id" class="expense-teacher-id" value="${prefill.teacherId?escapeHtml(prefill.teacherId):''}">
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>البيان</label><input type="text" name="description" placeholder="سبب المصروف" value="${prefill.description?escapeHtml(prefill.description):''}" required></div>
+        ${centerFieldHtml}
+      </div>
+      <div class="expense-items-toggle-wrap" style="margin-bottom:10px;">
+        <button type="button" class="btn btn-outline btn-sm expense-items-toggle" onclick="toggleExpenseItems(this)">+ تقسيم المبلغ لعناصر متعددة (بنود)</button>
+      </div>
+      <div class="expense-items-panel" style="display:none;">
+        <p class="hint" style="margin:0 0 8px;">اكتب بنود المصروف وقيمتها — المبلغ الكلي فوق هيتحسب تلقائي من مجموعها.</p>
+        <div class="expense-items-list"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button type="button" class="btn btn-outline btn-sm" onclick="addExpenseItemRow(this)">+ إضافة بند</button>
+          <button type="button" class="btn btn-danger-o btn-sm" onclick="clearExpenseItems(this)">إلغاء التقسيم لبنود</button>
+        </div>
+      </div>
+      <input type="hidden" name="items_json" class="expense-items-json" value="">
+      <button type="button" class="btn btn-danger-o btn-sm expense-row-remove" style="position:absolute;top:10px;left:10px;" onclick="removeExpenseRow(this)">حذف السطر</button>
+    </div>`;
+}
+// تقسيم المبلغ لبنود: مصروف واحد (سطر واحد) ممكن يتكوّن من أكتر من عنصر (مثلاً فاتورة فيها
+// كهرباء + مياه) — بيتخزنوا كمصفوفة jsonb في items_json (hidden input)، والمبلغ الكلي بيتحسب
+// تلقائي من مجموعهم بدل ما يتكتب يدوي. زي خانة الشريك، الدوال دي بتشتغل على مستوى السطر
+// (.closest('.expense-row')) عشان ممكن يكون فيه أكتر من سطر مصروف في نفس الوقت.
+function expenseItemRowHtml(){
+  return `<div class="expense-item-row" style="display:flex;gap:8px;margin-bottom:6px;align-items:center;">
+    <input type="text" class="expense-item-desc" placeholder="بيان البند (اختياري)" style="flex:2;" oninput="recalcExpenseItems(this)">
+    <input type="number" step="0.01" min="0" class="expense-item-amount" placeholder="المبلغ" style="flex:1;" oninput="recalcExpenseItems(this)">
+    <button type="button" class="btn btn-danger-o btn-sm" onclick="removeExpenseItemRow(this)">حذف</button>
+  </div>`;
+}
+function toggleExpenseItems(btn){
+  const row = btn.closest('.expense-row');
+  if(!row) return;
+  const panel = row.querySelector('.expense-items-panel');
+  const list = row.querySelector('.expense-items-list');
+  const toggleBtn = row.querySelector('.expense-items-toggle');
+  if(!panel) return;
+  panel.style.display = 'block';
+  if(toggleBtn) toggleBtn.style.display = 'none';
+  if(list && !list.children.length){
+    list.insertAdjacentHTML('beforeend', expenseItemRowHtml());
+    list.insertAdjacentHTML('beforeend', expenseItemRowHtml());
+  }
+  recalcExpenseItems(row);
+}
+function addExpenseItemRow(btn){
+  const row = btn.closest('.expense-row');
+  const list = row && row.querySelector('.expense-items-list');
+  if(!list) return;
+  list.insertAdjacentHTML('beforeend', expenseItemRowHtml());
+  recalcExpenseItems(row);
+}
+function removeExpenseItemRow(btn){
+  const row = btn.closest('.expense-row');
+  const item = btn.closest('.expense-item-row');
+  if(item) item.remove();
+  if(row) recalcExpenseItems(row);
+}
+function clearExpenseItems(btn){
+  const row = btn.closest('.expense-row');
+  if(!row) return;
+  const panel = row.querySelector('.expense-items-panel');
+  const list = row.querySelector('.expense-items-list');
+  const toggleBtn = row.querySelector('.expense-items-toggle');
+  const amountInput = row.querySelector('.expense-amount-input');
+  const jsonInput = row.querySelector('.expense-items-json');
+  if(list) list.innerHTML = '';
+  if(panel) panel.style.display = 'none';
+  if(toggleBtn) toggleBtn.style.display = '';
+  if(jsonInput) jsonInput.value = '';
+  if(amountInput) amountInput.removeAttribute('readonly');
+}
+// بتاخد أي عنصر جوه السطر (أو السطر نفسه) وبتعيد حساب مبلغ السطر الكلي من مجموع البنود
+// الصحيحة (اللي ليها مبلغ أكبر من صفر)، وبتحدّث خانة "المبلغ" (للقراءة فقط طول ما التقسيم
+// شغال) وخانة items_json المخفية اللي بتتبعت مع الفورم.
+function recalcExpenseItems(el){
+  const row = el.closest ? el.closest('.expense-row') : el;
+  if(!row) return;
+  const amountInput = row.querySelector('.expense-amount-input');
+  const jsonInput = row.querySelector('.expense-items-json');
+  const itemRows = row.querySelectorAll('.expense-item-row');
+  const items = [];
+  let total = 0;
+  itemRows.forEach(ir=>{
+    const descEl = ir.querySelector('.expense-item-desc');
+    const amtEl = ir.querySelector('.expense-item-amount');
+    const amt = parseFloat(amtEl ? amtEl.value : '');
+    if(!isNaN(amt) && amt>0){
+      items.push({ description: (descEl && descEl.value ? descEl.value.trim() : ''), amount: amt });
+      total += amt;
+    }
+  });
+  if(amountInput){ amountInput.value = items.length ? String(total) : ''; amountInput.setAttribute('readonly','readonly'); }
+  if(jsonInput) jsonInput.value = items.length ? JSON.stringify(items) : '';
+}
+// خانة "الشريك" في تسجيل مصروف بقت بحث + قايمة منسدلة (زي خانة المدرس في "+ إضافة حصة")،
+// وبما إن ممكن يكون فيه أكتر من سطر مصروف في نفس الوقت، الدوال دي بتشتغل على مستوى السطر
+// (بتلاقي أقرب .expense-row للعنصر اللي اتنده منه) مش على عنصر واحد ثابت بمعرف فريد.
+function expenseTeacherOptionsHtml(query){
+  const q = (query||'').trim().toLowerCase();
+  const activeTeachers = DB.teachers.filter(t=>t.active);
+  const matches = q ? activeTeachers.filter(t=> (t.name+' '+t.subject).toLowerCase().includes(q)) : activeTeachers;
+  const generalLabel = 'بدون — مصروف عام';
+  const generalMatches = !q || generalLabel.toLowerCase().includes(q);
+  let itemsHtml = '';
+  if(generalMatches){ itemsHtml += `<div class="dropdown-item" onmousedown="event.preventDefault();selectExpenseTeacher(this,'')">${generalLabel}</div>`; }
+  itemsHtml += matches.map(t=>`<div class="dropdown-item" onmousedown="event.preventDefault();selectExpenseTeacher(this,'${t.id}')">${escapeHtml(t.name)} (${escapeHtml(t.subject)})</div>`).join('');
+  return itemsHtml || '<div class="dropdown-item empty">مفيش شريك مطابق للبحث</div>';
+}
+function renderExpenseTeacherDropdown(inputEl){
+  const row = inputEl.closest('.expense-row');
+  const box = row && row.querySelector('.expense-teacher-dropdown');
+  if(!box) return;
+  box.innerHTML = expenseTeacherOptionsHtml(inputEl.value);
+  box.style.display = 'block';
+}
+// بيتنده لما خانة البحث تاخد فوكس أو تتداس — بيوضح كل الشركاء على طول، مهما كان مكتوب فيها حاليًا.
+function openExpenseTeacherDropdown(inputEl){
+  const row = inputEl.closest('.expense-row');
+  const box = row && row.querySelector('.expense-teacher-dropdown');
+  if(!box) return;
+  box.innerHTML = expenseTeacherOptionsHtml('');
+  box.style.display = 'block';
+}
+function closeExpenseTeacherDropdown(inputEl){
+  const row = inputEl.closest('.expense-row');
+  const box = row && row.querySelector('.expense-teacher-dropdown');
+  if(box){ box.style.display = 'none'; box.innerHTML = ''; }
+}
+function selectExpenseTeacher(itemEl, teacherId){
+  const row = itemEl.closest('.expense-row');
+  if(!row) return;
+  const input = row.querySelector('.expense-teacher-search');
+  const hidden = row.querySelector('.expense-teacher-id');
+  const teacher = teacherId ? teacherById(teacherId) : null;
+  if(input) input.value = teacher ? teacher.name : '';
+  if(hidden) hidden.value = teacherId || '';
+  closeExpenseTeacherDropdown(input || row);
+}
+function addExpenseFormRow(){
+  const container = document.getElementById('expenseRowsContainer');
+  if(!container) return;
+  const existingRows = container.querySelectorAll('.expense-row');
+  const lastRow = existingRows[existingRows.length-1];
+  // كرر المبلغ والبيان ونفس الشريك من آخر سطر — التاريخ والسنتر بيفضلوا افتراضيين في السطر الجديد
+  const prefill = lastRow ? {
+    amount: lastRow.querySelector('input[name="amount"]') ? lastRow.querySelector('input[name="amount"]').value : '',
+    description: lastRow.querySelector('input[name="description"]') ? lastRow.querySelector('input[name="description"]').value : '',
+    teacherId: lastRow.querySelector('.expense-teacher-id') ? lastRow.querySelector('.expense-teacher-id').value : '',
+    teacherName: lastRow.querySelector('.expense-teacher-search') ? lastRow.querySelector('.expense-teacher-search').value : '',
+  } : {};
+  const wrap = document.createElement('div');
+  wrap.innerHTML = expenseRowHtml(prefill);
+  container.appendChild(wrap.firstElementChild);
+  updateExpenseRowRemoveButtons();
+}
+function removeExpenseRow(btn){
+  const container = document.getElementById('expenseRowsContainer');
+  const row = btn.closest('.expense-row');
+  if(row && container && container.children.length>1){ row.remove(); }
+  updateExpenseRowRemoveButtons();
+}
+function updateExpenseRowRemoveButtons(){
+  const container = document.getElementById('expenseRowsContainer');
+  if(!container) return;
+  const rows = container.querySelectorAll('.expense-row');
+  rows.forEach(r=>{
+    const btn = r.querySelector('.expense-row-remove');
+    if(btn) btn.style.display = rows.length>1 ? '' : 'none';
+  });
+}
+// بيوضح تاريخ اليوم مع اسم يوم الأسبوع، لعنوان مجموعة المصروفات المجمّعة باليوم في "مصروفات السنتر".
+function dayGroupLabel(dateStr){
+  return ARABIC_DAYS[arabicWeekdayFromISO(dateStr)] + ' — ' + dateStr;
+}
+function expenseRowActionHtml(tx){
+  const status = tx.approvalStatus||'approved';
+  const canAct = tx.relatedTeacherId && status==='pending' && SESSION && (SESSION.profile.role==='admin' || (SESSION.profile.teacherId && SESSION.profile.teacherId===tx.relatedTeacherId));
+  const actions = [];
+  if(canAct){
+    actions.push(`<button class="btn btn-success btn-sm" data-action="approve-expense" data-id="${tx.id}">موافقة</button>`);
+    actions.push(`<button class="btn btn-outline btn-sm" data-action="reject-expense" data-id="${tx.id}">رفض</button>`);
+  }
+  if(can('expenses_delete')){ actions.push(`<button class="btn btn-danger-o btn-sm" data-action="delete-expense" data-id="${tx.id}">حذف</button>`); }
+  return actions.join('');
+}
+function expensesView(){
+  const list = DB.treasury.filter(t=>t.ttype==='expense').slice().sort((a,b)=> b.ttdate.localeCompare(a.ttdate));
+  const staleCount = list.filter(isStalePendingExpense).length;
+  const staleAlertHtml = staleCount>0
+    ? `<div class="card" style="border-color:var(--danger,#dc3545);"><p class="hint" style="margin:0;color:var(--danger,#dc3545);font-weight:600;">⚠ فيه ${staleCount} مصروف بانتظار موافقة الشريك من أكتر من ${STALE_PENDING_DAYS} أيام من غير رد فعل — يفضل تتابع مع الشريك أو الأدمن.</p></div>`
+    : '';
+  const showCenterCol = hasMultipleCenters();
+
+  // تجميع المصروفات باليوم (التاريخ) — أحدث يوم فوق، وجوه كل يوم مصروفاته بترتيبها الأصلي.
+  // كل يوم بيظهر كصف قابل للفتح (details/summary) بملخصه (عدد المصروفات + إجمالي المبلغ)،
+  // وبيفتح جدول تفاصيل مصروفات اليوم ده بس لما تدوس عليه.
+  const dayOrder = [];
+  const dayMap = {};
+  list.forEach(tx=>{
+    if(!dayMap[tx.ttdate]){ dayMap[tx.ttdate]=[]; dayOrder.push(tx.ttdate); }
+    dayMap[tx.ttdate].push(tx);
+  });
+  const dayGroupsHtml = dayOrder.map((date,idx)=>{
+    const dayTxs = dayMap[date];
+    const dayTotal = dayTxs.reduce((a,tx)=>a+tx.amount,0);
+    const rowsHtml = dayTxs.map(tx=> `<tr><td class="tnum">${fmt2(tx.amount)}</td><td>${escapeHtml(tx.description||'-')}${expenseLineItemsDetailHtml(tx)}</td><td>${tx.relatedTeacherId? escapeHtml(teacherName(tx.relatedTeacherId)) : tx.employeeId? escapeHtml(employeeName(tx.employeeId)) : '-'}</td>${showCenterCol?`<td>${tx.centerId? escapeHtml(centerName(tx.centerId)) : '-'}</td>`:''}<td>${expenseApprovalBadgeHtml(tx)}</td><td style="display:flex;gap:6px;flex-wrap:wrap;">${expenseRowActionHtml(tx)}</td></tr>`).join('');
+    // أحدث يوم (أول واحد في الترتيب) بيفضل مفتوح افتراضيًا عشان تشوف مصروفات النهارده على طول من غير ما تدوس؛ الأيام الأقدم بتبدأ مقفولة.
+    return `<details class="expense-day-group" ${idx===0?'open':''}>
+      <summary class="expense-day-summary">
+        <span class="expense-day-date">${dayGroupLabel(date)}</span>
+        <span class="expense-day-meta"><span>${dayTxs.length} مصروف</span><span class="expense-day-total">${fmt2(dayTotal)} ج.م</span></span>
+      </summary>
+      <div class="expense-day-body"><div class="table-wrap" style="border:none;border-radius:0;border-top:1px solid var(--border);"><table><thead><tr><th>المبلغ</th><th>البيان</th><th>الشريك / الموظف</th>${showCenterCol?'<th>السنتر</th>':''}<th>الحالة</th><th></th></tr></thead>
+      <tbody>${rowsHtml}</tbody></table></div></div>
+    </details>`;
+  }).join('');
+
+  return `
+  ${staleAlertHtml}
+  <div class="card">
+    <div class="card-head">
+      <h2>تسجيل مصروف جديد</h2>
+      <button type="button" class="btn btn-outline btn-sm" onclick="addExpenseFormRow()">+ إضافة سطر تاني</button>
+    </div>
+    <form data-form="addExpense">
+      <div id="expenseRowsContainer">${expenseRowHtml()}</div>
+      <p class="hint" style="margin-top:-2px;">لو اخترت مدرس في أي سطر، مبلغ السطر ده هيتسجل مصروف في الخزينة. لو المدرس ده عنده حساب دخول مرتبط بيه، المصروف هيتسجل "بانتظار موافقة الشريك" ومش هيتخصم من حسابه إلا بعد ما يوافق عليه هو أو الأدمن — غير كده هيتخصم (مدين) على طول. تقدر تسجل أكتر من مصروف مرة واحدة بضغط "+ إضافة سطر تاني". ولو المصروف نفسه متكوّن من أكتر من بند (زي فاتورة فيها كهرباء ومياه مثلاً)، دوس "+ تقسيم المبلغ لعناصر متعددة" جوه السطر عشان تسجّلهم كبنود والمبلغ الكلي يتحسب تلقائي.</p>
+      <button class="btn btn-danger" style="width:100%;justify-content:center;">تسجيل المصروفات</button>
+    </form>
+  </div>
+  <div class="card">
+    <div class="card-head"><h2>مصروفات السنتر</h2></div>
+    <p class="hint" style="margin-top:-6px;">مجمّعة باليوم — دوس على أي يوم عشان يفتحلك تفاصيل مصروفاته.</p>
+    ${dayOrder.length ? dayGroupsHtml : '<p class="hint">لا يوجد مصروفات مسجلة بعد</p>'}
+  </div>`;
+}
+
+function approvalsView(){
+  if(!(SESSION && SESSION.profile.teacherId)){
+    return `<div class="card"><p class="hint">الصفحة دي متاحة بس لو حسابك مرتبط بشريك (مدرس) — من "الإعدادات" تقدر تربط حسابك بمدرس معيّن.</p></div>`;
+  }
+  const myTeacherId = SESSION.profile.teacherId;
+  const mine = DB.treasury.filter(t=>t.ttype==='expense' && t.relatedTeacherId===myTeacherId).slice().sort((a,b)=> b.ttdate.localeCompare(a.ttdate));
+  const pending = mine.filter(t=>(t.approvalStatus||'approved')==='pending');
+  const decided = mine.filter(t=>(t.approvalStatus||'approved')!=='pending');
+  const staleCount = pending.filter(isStalePendingExpense).length;
+  const staleAlertHtml = staleCount>0
+    ? `<div class="card" style="border-color:var(--danger,#dc3545);"><p class="hint" style="margin:0;color:var(--danger,#dc3545);font-weight:600;">⚠ عندك ${staleCount} مصروف مستني ردّك من أكتر من ${STALE_PENDING_DAYS} أيام — يفضل تراجعه بسرعة.</p></div>`
+    : '';
+  return `
+  ${staleAlertHtml}
+  <div class="card">
+    <div class="card-head"><h2>مصاريف بانتظار موافقتك (${pending.length})</h2></div>
+    <p class="hint" style="margin-top:-6px;">دي مصاريف اتسجلت على حسابك كشريك ولسه ما اتخصمتش من رصيدك — وافق عليها أو ارفضها.</p>
+    <div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>المبلغ</th><th>البيان</th><th></th></tr></thead>
+    <tbody>${pending.length? pending.map(tx=>`<tr><td>${tx.ttdate}</td><td class="tnum">${fmt2(tx.amount)}</td><td>${escapeHtml(tx.description||'-')}${isStalePendingExpense(tx)?' <span class="badge unpaid">⚠ متأخر ('+pendingExpenseAgeDays(tx)+' يوم)</span>':''}${expenseLineItemsDetailHtml(tx)}</td><td style="display:flex;gap:6px;"><button class="btn btn-success btn-sm" data-action="approve-expense" data-id="${tx.id}">موافقة</button><button class="btn btn-outline btn-sm" data-action="reject-expense" data-id="${tx.id}">رفض</button></td></tr>`).join('') : '<tr><td colspan="4" class="empty-row">مفيش حاجة بانتظار موافقتك دلوقتي</td></tr>'}</tbody></table></div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h2>سجل قراراتك السابقة</h2></div>
+    <div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>المبلغ</th><th>البيان</th><th>الحالة</th></tr></thead>
+    <tbody>${decided.length? decided.slice(0,50).map(tx=>`<tr><td>${tx.ttdate}</td><td class="tnum">${fmt2(tx.amount)}</td><td>${escapeHtml(tx.description||'-')}${expenseLineItemsDetailHtml(tx)}</td><td>${expenseApprovalBadgeHtml(tx)}</td></tr>`).join('') : '<tr><td colspan="4" class="empty-row">مفيش قرارات سابقة</td></tr>'}</tbody></table></div>
+  </div>`;
+}
+
+function reportsView(){
+  const activeTeachers = DB.teachers.filter(t=>t.active);
+  const from = reportsState.from || (todayISO().slice(0,8)+'01');
+  const to = reportsState.to || todayISO();
+  let statementHtml = '';
+  if(reportsState.teacherId){
+    const st = computeStatement(reportsState.teacherId, from, to);
+    const t = teacherById(reportsState.teacherId);
+    const closingHtml = st.closingBalance>0 ? `<span class="badge unpaid">مستحق له ${fmt2(st.closingBalance)} ج.م</span>` : st.closingBalance<0 ? `<span class="badge paid">عليه للسنتر ${fmt2(-st.closingBalance)} ج.م</span>` : `<span class="badge neutral">متزن</span>`;
+    const ledgerRowsHtml = st.ledgerRows.map(e=>`<tr>
+        <td>${e.entryDate}</td>
+        <td>${escapeHtml(e.description||'')}</td>
+        <td>${ledgerEntrySourceLabel(e)}</td>
+        <td class="tnum">${e.entryType==='credit'? fmt2(e.amount) : '—'}</td>
+        <td class="tnum">${e.entryType==='debit'? fmt2(e.amount) : '—'}</td>
+        <td class="tnum">${fmt2(e.runningBalance)}</td>
+      </tr>`).join('');
+    statementHtml = `
+    <div class="card">
+      <div class="card-head">
+        <h2>كشف حساب كامل: ${escapeHtml(t?t.name:'')} (${from} → ${to})</h2>
+        <div class="no-print" style="display:flex;gap:8px;">
+          <button type="button" class="btn btn-outline btn-sm" onclick="exportTeacherStatementExcel()">تصدير Excel</button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="window.print()">طباعة / حفظ PDF</button>
+        </div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card green"><div class="lbl">حصص محصّلة</div><div class="val">${st.collected.length}</div></div>
+        <div class="stat-card gold"><div class="lbl">إجمالي الطلاب</div><div class="val">${st.totalChildren}</div></div>
+        <div class="stat-card rose"><div class="lbl">إجمالي المحصّل من الطلاب</div><div class="val">${fmt2(st.totalCollected)} ج.م</div></div>
+        <div class="stat-card red"><div class="lbl">حصص ملغاة/مؤجلة</div><div class="val">${st.cancelled.length}</div></div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card gold"><div class="lbl">الرصيد الافتتاحي (قبل ${from})</div><div class="val">${fmt2(st.openingBalance)} ج.م</div></div>
+        <div class="stat-card green"><div class="lbl">إجمالي المستحق له في الفترة (دائن)</div><div class="val">${fmt2(st.periodCredit)} ج.م</div></div>
+        <div class="stat-card red"><div class="lbl">إجمالي عليه في الفترة (مدين)</div><div class="val">${fmt2(st.periodDebit)} ج.م</div></div>
+        <div class="stat-card rose"><div class="lbl">الرصيد الختامي (حتى ${to})</div><div class="val">${closingHtml}</div></div>
+      </div>
+      <p class="hint" style="margin-top:-6px;">"استحقاق المدرس" جنب كل حصة = نصيبه من المبلغ المحصّل بنسبة استحقاقه (بيتضاف تلقائي كقيد دائن). الرصيد الافتتاحي بيجمع كل قيود حساب المدرس قبل بداية الفترة، والختامي هو رصيده الفعلي لحد نهايتها.</p>
+      <h3 style="margin:14px 0 6px;font-size:14.5px;">تفاصيل الحصص</h3>
+      <div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>المرحلة</th><th>الطلاب</th><th>الحالة</th><th>المبلغ المحصّل</th><th>استحقاق المدرس</th></tr></thead>
+      <tbody>${st.sessions.length? st.sessions.map(s=>`<tr><td>${s.sessionDate}</td><td>${s.gradeLevel?escapeHtml(gradeLabel(s.gradeLevel)):'—'}</td><td>${s.childrenCount??'—'}</td><td>${s.status==='collected'?'<span class="badge paid">محصّلة</span>':s.status==='cancelled'?(s.postponedToDate?'<span class="badge partial">مؤجلة</span>':'<span class="badge unpaid">ملغاة</span>'):'<span class="badge neutral">لسه</span>'}</td><td class="tnum">${s.status==='collected'?fmt2(s.collectedAmount||0):'—'}</td><td class="tnum">${st.sessionCreditById[s.id]!=null?fmt2(st.sessionCreditById[s.id]):'—'}</td></tr>`).join('') : '<tr><td colspan="6" class="empty-row">لا يوجد حصص في هذه الفترة</td></tr>'}</tbody></table></div>
+      <h3 style="margin:18px 0 6px;font-size:14.5px;">حركة الحساب (مدين / دائن)</h3>
+      <div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>البيان</th><th>المصدر</th><th>دائن</th><th>مدين</th><th>الرصيد</th></tr></thead>
+      <tbody>${st.ledgerRows.length? ledgerRowsHtml : '<tr><td colspan="6" class="empty-row">لا يوجد قيود مالية في هذه الفترة</td></tr>'}</tbody></table></div>
+    </div>`;
+  }
+  return `
+  <div class="card" style="padding-bottom:12px;">
+    <div class="card-head"><h2>تقرير الأرباح والخسائر</h2></div>
+    <p class="hint" style="margin-top:-6px;">اختر شهري أو أسبوعي عشان يظهر التقرير المطلوب بس.</p>
+    <div class="no-print" style="display:flex;gap:8px;">
+      <button type="button" class="btn ${pnlPeriod==='monthly'?'btn-primary':'btn-outline'} btn-sm" onclick="setPnlPeriod('monthly')">شهري</button>
+      <button type="button" class="btn ${pnlPeriod==='weekly'?'btn-primary':'btn-outline'} btn-sm" onclick="setPnlPeriod('weekly')">أسبوعي</button>
+    </div>
+  </div>
+  ${pnlPeriod==='weekly' ? weeklyPnlCardHtml() : monthlyPnlCardHtml()}
+  <div class="card">
+    <div class="card-head"><h2>كشف حساب مدرس (كامل)</h2></div>
+    <p class="hint" style="margin-top:-6px;">كشف شامل لأي مدرس عن فترة محددة: كل حصصه بتفاصيلها (تاريخ، مرحلة، عدد طلاب، حالة، مبلغ محصّل، استحقاقه منها)، مع كل حركات حسابه المالية (مدين/دائن) والرصيد الافتتاحي والختامي — يوضح بالظبط هو مستحق له كام ولا عليه كام.</p>
+    <form data-form="filterReports">
+      <div class="row3">
+        <div class="field"><label>المدرس</label><select name="teacher_id" required><option value="" disabled ${!reportsState.teacherId?'selected':''}>اختر مدرس</option>${optionsHtml(activeTeachers, reportsState.teacherId)}</select></div>
+        <div class="field"><label>من تاريخ</label><input type="date" name="from" value="${from}"></div>
+        <div class="field"><label>إلى تاريخ</label><input type="date" name="to" value="${to}"></div>
+      </div>
+      <button class="btn btn-primary">عرض الكشف</button>
+    </form>
+  </div>
+  ${statementHtml}`;
+}
+function monthlyPnlCardHtml(){
+  const centerId = pnlFilterCenterId||'';
+  const rows = monthlyPnlData(centerId);
+  const filtered = !!centerId;
+  const centerFilterHtml = hasMultipleCenters()
+    ? `<div class="field" style="max-width:260px;"><label>فلترة بالسنتر (الفرع)</label><select onchange="setPnlFilterCenter(this.value)"><option value="">كل السناتر</option>${DB.centers.filter(c=>c.active).map(c=>`<option value="${c.id}" ${pnlFilterCenterId===c.id?'selected':''}>${escapeHtml(c.name)}</option>`).join('')}</select></div>`
+    : '';
+  const chartHtml = financeChartSvg(rows.map(r=>({label:arabicMonthLabel(r.month), income:r.income, expense:r.expense, net:r.net})), {filtered, height:260});
+  const rowsHtml = rows.map(r=>`<tr>
+    <td>${escapeHtml(arabicMonthLabel(r.month))}</td>
+    <td class="tnum">${fmt2(r.income)}</td>
+    <td class="tnum">${fmt2(r.expense)}</td>
+    ${filtered ? '' : `<td class="tnum">${fmt2(r.teacherShare)}</td>`}
+    <td class="tnum">${fmt2(r.net)}</td>
+    <td>${deltaBadgeHtml(r.delta)}</td>
+  </tr>`).join('');
+  return `
+  <div class="card">
+    <div class="card-head">
+      <h2>تقرير الأرباح والخسائر الشهري</h2>
+      <div class="no-print" style="display:flex;gap:8px;">
+        <button type="button" class="btn btn-outline btn-sm" onclick="exportPnlExcel()">تصدير Excel</button>
+        <button type="button" class="btn btn-outline btn-sm" onclick="window.print()">طباعة / حفظ PDF</button>
+      </div>
+    </div>
+    <p class="hint" style="margin-top:-6px;">آخر 12 شهر (الأحدث في الآخر) — ${filtered? 'صافي التدفق النقدي = التحصيل ناقص المصروفات المعتمدة لهذا السنتر بس (من غير مستحقات المدرسين، لأنها مش مقسّمة بالفرع).' : 'صافي الربح = التحصيل ناقص المصروفات المعتمدة ناقص مستحقات المدرسين اللي اتحقت في نفس الشهر (سواء اتسوت فعليًا ولا لسه). عمود "التغيّر" بيقارن بصافي الشهر اللي فات.'} لو عايز نسخة PDF، دوس "طباعة / حفظ PDF" واختار "Save as PDF" من نافذة الطباعة.</p>
+    ${centerFilterHtml}
+    ${chartHtml}
+    <div class="table-wrap"><table><thead><tr><th>الشهر</th><th>التحصيل</th><th>المصروفات المعتمدة</th>${filtered?'':'<th>مستحقات المدرسين</th>'}<th>${filtered?'صافي التدفق النقدي':'صافي الربح'}</th><th>التغيّر عن الشهر اللي فات</th></tr></thead>
+    <tbody>${rowsHtml || `<tr><td colspan="${filtered?5:6}" class="empty-row">لا يوجد بيانات</td></tr>`}</tbody></table></div>
+  </div>`;
+}
+function weeklyPnlCardHtml(){
+  const centerId = pnlFilterCenterId||'';
+  const rows = weeklyPnlData(centerId);
+  const filtered = !!centerId;
+  const centerFilterHtml = hasMultipleCenters()
+    ? `<div class="field" style="max-width:260px;"><label>فلترة بالسنتر (الفرع)</label><select onchange="setPnlFilterCenter(this.value)"><option value="">كل السناتر</option>${DB.centers.filter(c=>c.active).map(c=>`<option value="${c.id}" ${pnlFilterCenterId===c.id?'selected':''}>${escapeHtml(c.name)}</option>`).join('')}</select></div>`
+    : '';
+  const chartHtml = financeChartSvg(rows.map(r=>({label:weekLabel(r.week), income:r.income, expense:r.expense, net:r.net})), {filtered, height:260});
+  const rowsHtml = rows.map(r=>`<tr>
+    <td>${escapeHtml(weekLabel(r.week))}</td>
+    <td class="tnum">${fmt2(r.income)}</td>
+    <td class="tnum">${fmt2(r.expense)}</td>
+    ${filtered ? '' : `<td class="tnum">${fmt2(r.teacherShare)}</td>`}
+    <td class="tnum">${fmt2(r.net)}</td>
+    <td>${deltaBadgeHtml(r.delta)}</td>
+  </tr>`).join('');
+  return `
+  <div class="card">
+    <div class="card-head">
+      <h2>تقرير الأرباح والخسائر الأسبوعي</h2>
+      <div class="no-print" style="display:flex;gap:8px;">
+        <button type="button" class="btn btn-outline btn-sm" onclick="exportWeeklyPnlExcel()">تصدير Excel</button>
+        <button type="button" class="btn btn-outline btn-sm" onclick="window.print()">طباعة / حفظ PDF</button>
+      </div>
+    </div>
+    <p class="hint" style="margin-top:-6px;">آخر 12 أسبوع (سبت→جمعة، الأحدث في الآخر) — ${filtered? 'صافي التدفق النقدي = التحصيل ناقص المصروفات المعتمدة لهذا السنتر بس (من غير مستحقات المدرسين، لأنها مش مقسّمة بالفرع).' : 'صافي الربح = التحصيل ناقص المصروفات المعتمدة ناقص مستحقات المدرسين اللي اتحقت في نفس الأسبوع (سواء اتسوت فعليًا ولا لسه). عمود "التغيّر" بيقارن بصافي الأسبوع اللي فات.'} لو عايز نسخة PDF، دوس "طباعة / حفظ PDF" واختار "Save as PDF" من نافذة الطباعة.</p>
+    ${centerFilterHtml}
+    ${chartHtml}
+    <div class="table-wrap"><table><thead><tr><th>الأسبوع</th><th>التحصيل</th><th>المصروفات المعتمدة</th>${filtered?'':'<th>مستحقات المدرسين</th>'}<th>${filtered?'صافي التدفق النقدي':'صافي الربح'}</th><th>التغيّر عن الأسبوع اللي فات</th></tr></thead>
+    <tbody>${rowsHtml || `<tr><td colspan="${filtered?5:6}" class="empty-row">لا يوجد بيانات</td></tr>`}</tbody></table></div>
+  </div>`;
+}
+
+function settingsView(){
+  const org = DB.orgSettings || {};
+  const isAdmin = SESSION.profile.role==='admin';
+  const canManageUsers = isAdmin || can('manage_users');
+  const canEditOrgSettings = isAdmin || can('settings');
+  const visibleProfiles = allProfiles.filter(u=> u.active!==false && (isAdmin || u.role!=='admin'));
+  const activeTeachersForLink = DB.teachers.filter(t=>t.active);
+  // مدرس بيظهر في قايمة الربط لو مش مرتبط بحساب فعّال تاني (كل مدرس يترتبط بحساب واحد بس)
+  const linkedTeacherIds = new Set(allProfiles.filter(u=>u.active!==false && u.teacherId).map(u=>u.teacherId));
+  function teacherLinkOptionsHtml(currentTeacherId){
+    const opts = activeTeachersForLink.filter(t=> t.id===currentTeacherId || !linkedTeacherIds.has(t.id));
+    return `<option value="">بدون ربط</option>` + opts.map(t=>`<option value="${t.id}" ${t.id===currentTeacherId?'selected':''}>${escapeHtml(t.name)}</option>`).join('');
+  }
+  return `
+  ${canEditOrgSettings ? `
+  <div class="card">
+    <div class="card-head"><h2>بيانات النظام</h2></div>
+    <p class="hint" style="margin-top:-6px;">اسم النظام بيظهر بدل "${escapeHtml(DEFAULT_SYSTEM_NAME)}" في كل الشاشات — أعلى القائمة بعد تسجيل الدخول، وشاشة الدخول، وعنوان تبويب المتصفح.</p>
+    <form data-form="saveOrgSettings">
+      <div class="row3">
+        <div class="field"><label>اسم النظام</label><input type="text" name="company_name" value="${escapeHtml(org.companyName||'')}" placeholder="مثال: سنتر النجاح"></div>
+        <div class="field"><label>رقم التليفون</label><input type="text" name="phone" value="${escapeHtml(org.phone||'')}" placeholder="01xxxxxxxxx"></div>
+        <div class="field"><label>العنوان</label><input type="text" name="address" value="${escapeHtml(org.address||'')}" placeholder="اختياري"></div>
+      </div>
+      <button class="btn btn-primary">حفظ بيانات النظام</button>
+    </form>
+  </div>` : ''}
+
+  ${isAdmin ? `
+  <div class="card">
+    <div class="card-head"><h2>إضافة مستخدم جديد</h2></div>
+    <form data-form="addUser">
+      <div class="row3">
+        <div class="field"><label>الاسم بالكامل</label><input type="text" name="full_name" required></div>
+        <div class="field"><label>اسم المستخدم (لتسجيل الدخول به)</label><input type="text" name="username" pattern="[A-Za-z0-9_.\\-]{3,32}" title="حروف إنجليزية وأرقام و . _ - بس، من غير مسافات، من 3 لـ32 حرف" required></div>
+        <div class="field"><label>الدور</label><select name="role"><option value="staff">موظف</option><option value="admin">أدمن</option></select></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>كلمة المرور (6 أحرف على الأقل)</label><input type="password" name="password" minlength="6" required></div>
+        <div class="field"><label>ربط بحساب مدرس (اختياري)</label><select name="teacher_id">${teacherLinkOptionsHtml(null)}</select></div>
+      </div>
+      <p class="hint" style="margin-top:-6px;">اسم المستخدم لازم يكون حروف إنجليزية وأرقام بس (يُسمح بـ . _ -)، من غير مسافات — هو ده اللي هيدخل بيه المستخدم مع كلمة المرور، مفيش إيميل مطلوب خالص. لو ربطت الحساب بمدرس (شريك)، هيقدر يوافق أو يرفض المصاريف اللي بتتسجل عليه من تبويب "موافقاتي".</p>
+      <div class="field" style="max-width:260px;margin-bottom:14px;"><button class="btn btn-gold" style="width:100%;justify-content:center;">إضافة المستخدم</button></div>
+      <label style="font-size:12.5px;color:var(--text-muted);display:block;margin-bottom:8px;font-weight:500;">الصلاحيات (للدور "موظف" — الأدمن بياخد كل الصلاحيات تلقائي)</label>
+      <div style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:6px;">
+        ${PERMISSION_MODULES.map(m=>`<label style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--text);"><input type="checkbox" name="perm_${m.key}"> ${m.label}</label>`).join('')}
+      </div>
+    </form>
+    <p class="hint" style="margin-top:6px;">مهم: لازم تكون خانة "Confirm email" مقفولة من مشروع Supabase بتاعك (Authentication ← Providers ← Email) عشان الحسابات الجديدة تتفعّل على طول من غير ما تحتاج تأكيد إيميل (أصلاً مفيش إيميل حقيقي هنا). لو مقفولة بالفعل، مفيش خطوة تانية بعد إضافة المستخدم.</p>
+  </div>` : ''}
+
+  ${canManageUsers ? `
+  <div class="card">
+    <div class="card-head"><h2>صلاحيات المستخدمين</h2></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>المستخدم</th><th>الاسم</th><th>الدور</th>${PERMISSION_MODULES.map(m=>`<th>${m.label}</th>`).join('')}<th>الشريك المرتبط</th><th></th></tr></thead>
+        <tbody>
+        ${visibleProfiles.length? visibleProfiles.map(u=>{
+          const isSelf = SESSION.profile.id===u.id;
+          return `
+          <tr>
+            <td>${escapeHtml(u.username)}</td>
+            <td>${escapeHtml(u.fullName||'')}</td>
+            <td>
+              <select style="width:auto;" data-role-select data-id="${u.id}" ${(!isAdmin || isSelf)?'disabled':''}>
+                <option value="staff" ${u.role==='staff'?'selected':''}>موظف</option>
+                ${isAdmin? `<option value="admin" ${u.role==='admin'?'selected':''}>أدمن</option>` : ''}
+              </select>
+            </td>
+            ${PERMISSION_MODULES.map(m=>`<td style="text-align:center;"><input type="checkbox" data-perm-check data-perm="${m.key}" ${ (u.permissions&&u.permissions[m.key]) ? 'checked':'' } ${isSelf?'disabled':''}></td>`).join('')}
+            <td><select style="width:auto;" data-teacher-link-select ${(!isAdmin || isSelf)?'disabled':''}>${teacherLinkOptionsHtml(u.teacherId||null)}</select></td>
+            <td style="display:flex;gap:6px;">
+              <button class="btn btn-success btn-sm" data-action="save-user" data-id="${u.id}" ${isSelf?'disabled':''}>حفظ</button>
+              ${(!isSelf)? `<button class="btn btn-danger-o btn-sm" data-action="delete-user" data-id="${u.id}">حذف</button>` : ''}
+            </td>
+          </tr>`;
+        }).join('') : `<tr><td colspan="${3+PERMISSION_MODULES.length+2}" class="empty-row">لا يوجد مستخدمين بعد</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+    <p class="hint" style="margin-top:12px;">لو حد اتضاف بس لسه مسجّلش دخول أول مرة (Confirm email مفعّل)، مش هيظهر هنا إلا بعد أول تسجيل دخول ليه. مينفعش تعدّل أو تحذف حسابك انت من هنا، ومينفعش المستخدم غير الأدمن يشوف أو يعدّل حسابات الأدمن التانية.</p>
+  </div>` : ''}
+  ${(isAdmin || can('audit_log')) ? auditLogCardHtml() : ''}`;
+}
+function auditActionLabel(action){
+  const map = { create:'إضافة', update:'تعديل', delete:'حذف', approve:'موافقة', reject:'رفض', collect:'تحصيل', cancel:'إلغاء/تأجيل' };
+  return map[action] || action;
+}
+function auditLogCardHtml(){
+  const entries = auditLogState.entries;
+  return `
+  <div class="card">
+    <div class="card-head">
+      <h2>سجل التدقيق</h2>
+      <button type="button" class="btn btn-outline btn-sm" data-action="refresh-audit-log">${auditLogState.loading?'جاري التحميل...':'تحديث السجل'}</button>
+    </div>
+    <p class="hint" style="margin-top:-6px;">آخر ${entries.length} حركة مسجلة (الأحدث فوق) — مين عمل إيه وإمتى في المصروفات، التحصيل، حسابات المدرسين، والمستخدمين. السجل ده للقراءة فقط ومينفعش يتعدّل.</p>
+    <div class="table-wrap"><table><thead><tr><th>الوقت</th><th>المستخدم</th><th>الإجراء</th><th>التفاصيل</th></tr></thead>
+    <tbody>${entries.length? entries.map(a=>`<tr><td>${a.createdAt? escapeHtml(new Date(a.createdAt).toLocaleString('ar-EG')) : '-'}</td><td>${escapeHtml(a.actorName||'-')}</td><td>${escapeHtml(auditActionLabel(a.action))}</td><td>${escapeHtml(a.description||'')}</td></tr>`).join('') : '<tr><td colspan="4" class="empty-row">لسه مفيش حركات مسجلة في السجل</td></tr>'}</tbody></table></div>
+  </div>`;
+}
+
+/* ---------------- Modals ---------------- */
+function toggleCancelFields(v){
+  const dateWrap = document.getElementById('postponeDateWrap');
+  const customWrap = document.getElementById('customReasonWrap');
+  if(dateWrap) dateWrap.style.display = v==='تأجيل لموعد تاني' ? 'block':'none';
+  if(customWrap) customWrap.style.display = v==='سبب تاني' ? 'block':'none';
+}
+function updateHallOptionsForCenter(centerId){
+  const sel = document.getElementById('adhocHallSelect');
+  if(!sel) return;
+  const halls = DB.halls.filter(h=>h.active && h.centerId===centerId);
+  sel.innerHTML = optionsHtml(halls);
+}
+// خانة "المدرس" في مودال "إضافة حصة" بقت خانة واحدة مدموجة: بحث + اختيار مع بعض،
+// بقايمة منسدلة مبنية يدوي (مش <datalist>) عشان تجيب كل المدرسين لما تدوس على الخانة
+// حتى لو فيها اسم مدرس متعبّي من قبل، وتفلتر بالاسم أو المادة أول ما تكتب.
+function adhocTeacherLabel(t){ return t.name + ' (' + t.subject + ')'; }
+function adhocTeacherMatches(query){
+  const q = (query||'').trim().toLowerCase();
+  const activeTeachers = DB.teachers.filter(t=>t.active);
+  return q ? activeTeachers.filter(t=> (t.name+' '+t.subject).toLowerCase().includes(q)) : activeTeachers;
+}
+function renderAdhocTeacherDropdown(query){
+  const box = document.getElementById('adhocTeacherDropdown');
+  if(!box) return;
+  const matches = adhocTeacherMatches(query);
+  box.innerHTML = matches.length
+    ? matches.map(t=>`<div class="dropdown-item" onmousedown="event.preventDefault();selectAdhocTeacher('${t.id}')">${escapeHtml(adhocTeacherLabel(t))}</div>`).join('')
+    : '<div class="dropdown-item empty">مفيش مدرس مطابق للبحث</div>';
+  box.style.display = 'block';
+}
+// بيتنده لما الخانة تاخد فوكس (تدوس عليها) — بيوضح كل المدرسين على طول، مهما كان مكتوب فيها حاليًا.
+function openAdhocTeacherDropdown(){ renderAdhocTeacherDropdown(''); }
+function closeAdhocTeacherDropdown(){
+  const box = document.getElementById('adhocTeacherDropdown');
+  if(box){ box.style.display = 'none'; box.innerHTML = ''; }
+}
+function selectAdhocTeacher(teacherId){
+  const teacher = teacherById(teacherId);
+  if(!teacher) return;
+  const input = document.getElementById('adhocTeacherSearch');
+  const hidden = document.getElementById('adhocTeacherIdInput');
+  if(input) input.value = adhocTeacherLabel(teacher);
+  if(hidden) hidden.value = teacherId;
+  closeAdhocTeacherDropdown();
+  updateRateForTeacher(teacherId);
+}
+function updateRateForTeacher(teacherId){
+  // لما يتغيّر المدرس، بنجدد خيارات المرحلة السنية المتاحة (خاصة بالمدرس ده)، ونصفّر
+  // اختيار المرحلة، وبنحدّث السعر بالسعر العام للمدرس الجديد (لحد ما يختار مرحلة).
+  const gradeSel = document.getElementById('adhocGradeSelect');
+  const teacher = teacherById(teacherId);
+  if(gradeSel){
+    const grades = teacherGrades(teacher);
+    gradeSel.innerHTML = '<option value="">بدون تحديد (السعر العام)</option>'
+      + grades.map(g=>`<option value="${g.key}">${escapeHtml(g.label)}</option>`).join('');
+  }
+  updateRateForGradeSelection(teacherId, '');
+}
+function updateRateForGradeSelection(teacherId, gradeKey){
+  const input = document.getElementById('adhocRateInput');
+  if(!input) return;
+  const teacher = teacherById(teacherId);
+  input.value = teacherRateForGrade(teacher, gradeKey||'');
+}
+function collectModalHtml(sessionId){
+  const s = DB.sessions.find(x=>x.id===sessionId);
+  if(!s) return '';
+  const def = s.amountDue!=null ? s.amountDue : Math.round((s.childrenCount||0)*(s.ratePerChild||0)*100)/100;
+  return `
+  <div class="overlay" onclick="if(event.target===this){modalState=null;render();}">
+    <div class="modal">
+      <div class="modal-head"><h3>تحصيل الحصة</h3><button class="modal-close" data-action="close-modal">✕</button></div>
+      <p class="hint">${escapeHtml(teacherName(s.teacherId))}${s.gradeLevel?' — '+escapeHtml(gradeLabel(s.gradeLevel)):''} — ${s.childrenCount??0} طالب × ${fmt2(s.ratePerChild||0)} ج.م</p>
+      <form data-form="collectSession" data-id="${sessionId}">
+        <div class="field"><label>المبلغ المُحصّل</label><input type="number" step="0.01" min="0" name="amount" value="${def}" required></div>
+        <div class="field"><label>ملاحظة (اختياري — لو المبلغ مختلف عن المتوقع بالزيادة أو النقص، اكتب السبب هنا)</label><input type="text" name="note" placeholder="مثال: خصم اتفقنا عليه / دفع زيادة تسوية شهر فات"></div>
+        <div class="modal-foot">
+          <button type="button" class="btn btn-outline btn-sm" data-action="close-modal">تراجع</button>
+          <button class="btn btn-success btn-sm">تأكيد التحصيل</button>
+        </div>
+      </form>
+    </div>
+  </div>`;
+}
+function cancelModalHtml(sessionId){
+  const s = DB.sessions.find(x=>x.id===sessionId);
+  if(!s) return '';
+  return `
+  <div class="overlay" onclick="if(event.target===this){modalState=null;render();}">
+    <div class="modal">
+      <div class="modal-head"><h3>إلغاء الحصة</h3><button class="modal-close" data-action="close-modal">✕</button></div>
+      <p class="hint">${escapeHtml(teacherName(s.teacherId))} — ${s.sessionDate} ${escapeHtml(s.startTime||'')}</p>
+      <form data-form="cancelSession" data-id="${sessionId}">
+        <label class="radio-row"><input type="radio" name="reason" value="المدرس اعتذر" checked onchange="toggleCancelFields(this.value)"> المدرس اعتذر</label>
+        <label class="radio-row"><input type="radio" name="reason" value="تأجيل لموعد تاني" onchange="toggleCancelFields(this.value)"> تأجيل لموعد تاني</label>
+        <div id="postponeDateWrap" style="display:none;margin:2px 0 8px 26px;">
+          <label>التاريخ الجديد</label>
+          <input type="date" name="postpone_date" min="${todayISO()}">
+        </div>
+        <label class="radio-row"><input type="radio" name="reason" value="سبب تاني" onchange="toggleCancelFields(this.value)"> سبب تاني</label>
+        <div id="customReasonWrap" style="display:none;margin:2px 0 8px 26px;">
+          <input type="text" name="custom_reason" placeholder="اكتب السبب">
+        </div>
+        <div class="modal-foot">
+          <button type="button" class="btn btn-outline btn-sm" data-action="close-modal">تراجع</button>
+          <button class="btn btn-danger btn-sm">تأكيد الإلغاء</button>
+        </div>
+      </form>
+    </div>
+  </div>`;
+}
+function addSessionModalHtml(){
+  const activeCenters = DB.centers.filter(c=>c.active);
+  const activeTeachers = DB.teachers.filter(t=>t.active);
+  const firstCenter = activeCenters[0];
+  const hallsForFirst = firstCenter? DB.halls.filter(h=>h.active && h.centerId===firstCenter.id) : [];
+  const firstTeacherRate = activeTeachers[0] ? activeTeachers[0].ratePerChild : 0;
+  return `
+  <div class="overlay" onclick="if(event.target===this){modalState=null;render();}">
+    <div class="modal">
+      <div class="modal-head"><h3>إضافة حصة</h3><button class="modal-close" data-action="close-modal">✕</button></div>
+      <form data-form="addSessionModal">
+        <div class="field"><label>السنتر</label><select name="center_id" onchange="updateHallOptionsForCenter(this.value)">${activeCenters.map(c=>`<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('')}</select></div>
+        <div class="field"><label>المدرج</label><select name="hall_id" id="adhocHallSelect">${optionsHtml(hallsForFirst)}</select></div>
+        <div class="field">
+          <label>المدرس</label>
+          <div class="teacher-search-wrap">
+            <input type="text" id="adhocTeacherSearch" placeholder="دوّر واختار مدرس بالاسم أو المادة" autocomplete="off" value="${activeTeachers[0]?escapeHtml(adhocTeacherLabel(activeTeachers[0])):''}" oninput="renderAdhocTeacherDropdown(this.value)" onfocus="openAdhocTeacherDropdown()" onclick="openAdhocTeacherDropdown()" onblur="setTimeout(closeAdhocTeacherDropdown,150)" required>
+            <div id="adhocTeacherDropdown" class="teacher-search-dropdown" style="display:none;"></div>
+          </div>
+          <input type="hidden" name="teacher_id" id="adhocTeacherIdInput" value="${activeTeachers[0]?activeTeachers[0].id:''}">
+        </div>
+        <div class="field"><label>المرحلة السنية (اختياري)</label><select name="grade_level" id="adhocGradeSelect" onchange="updateRateForGradeSelection(document.getElementById('adhocTeacherIdInput').value, this.value)"><option value="">بدون تحديد (السعر العام)</option>${teacherGrades(activeTeachers[0]).map(g=>`<option value="${g.key}">${escapeHtml(g.label)}</option>`).join('')}</select></div>
+        <div class="field"><label>عدد الطلاب</label><input type="number" min="0" name="children_count" required></div>
+        <div class="field"><label>سعر الطالب الواحد لهذه الحصة</label><input type="number" step="0.01" min="0" name="rate_per_child" id="adhocRateInput" value="${firstTeacherRate}" required></div>
+        <p class="hint" style="margin-top:-6px;">معبّى تلقائي بسعر المرحلة السنية المختارة عند المدرس (أو سعره العام لو المرحلة مش محددة)، وبيتغيّر تلقائي لو غيّرت المدرس أو المرحلة — لكن تقدر تعدّله يدوي لو الحصة دي بسعر مختلف استثنائيًا.</p>
+        <div class="field"><label>الوقت</label><input type="time" name="start_time" value="${nowHHMM()}" required></div>
+        <div class="modal-foot">
+          <button type="button" class="btn btn-outline btn-sm" data-action="close-modal">إلغاء</button>
+          <button class="btn btn-primary btn-sm">إضافة</button>
+        </div>
+      </form>
+    </div>
+  </div>`;
+}
+function settleModalHtml(teacherId){
+  const t = teacherById(teacherId);
+  if(!t) return '';
+  const bal = teacherBalance(teacherId);
+  const dueAmount = Math.abs(bal);
+  const dirText = bal>0 ? 'مستحق للمدرس (السنتر عليه فلوس له)' : 'على المدرس (له فلوس للسنتر)';
+  return `
+  <div class="overlay" onclick="if(event.target===this){modalState=null;render();}">
+    <div class="modal">
+      <div class="modal-head"><h3>تسوية حساب: ${escapeHtml(t.name)}</h3><button class="modal-close" data-action="close-modal">✕</button></div>
+      <p class="hint">الرصيد الحالي: ${fmt2(dueAmount)} ج.م ${dirText}.</p>
+      <form data-form="settleTeacher" data-id="${teacherId}">
+        <div class="field"><label>المبلغ اللي هيتسوى</label><input type="number" step="0.01" min="0.01" name="amount" value="${dueAmount}" required></div>
+        <p class="hint" style="margin-top:-4px;">المبلغ ده معبّى تلقائي بكل المستحق، لكن تقدر تغيّره لمبلغ جزئي (لو هتسوي جزء بس) أو مبلغ تاني تمامًا — وهيتسجل قيد في حساب المدرس بيعادل رصيده محاسبيًا، وينعكس تلقائي في كل الشاشات التانية (قائمة المدرسين، صفحة المدرس، الخزينة).</p>
+        <div class="modal-foot">
+          <button type="button" class="btn btn-outline btn-sm" data-action="close-modal">تراجع</button>
+          <button class="btn btn-success btn-sm">تأكيد التسوية</button>
+        </div>
+      </form>
+    </div>
+  </div>`;
+}
+function paySalaryModalHtml(employeeId){
+  const emp = employeeById(employeeId);
+  if(!emp) return '';
+  const outstandingAdvance = employeeAdvanceBalance(employeeId);
+  return `
+  <div class="overlay" onclick="if(event.target===this){modalState=null;render();}">
+    <div class="modal">
+      <div class="modal-head"><h3>صرف راتب: ${escapeHtml(emp.name)}</h3><button class="modal-close" data-action="close-modal">✕</button></div>
+      ${outstandingAdvance>0 ? `<p class="hint">عليه سلفة مستحقة حاليًا: <strong>${fmt2(outstandingAdvance)} ج.م</strong> — تقدر تسوي كلها أو جزء منها من صافي الراتب في خانة "تسوية سلفة" تحت.</p>` : ''}
+      <form data-form="paySalary" data-id="${employeeId}">
+        <div class="row3">
+          <div class="field"><label>المرتب الأساسي</label><input type="number" step="0.01" min="0" name="base_amount" value="${emp.baseSalary}" required></div>
+          <div class="field"><label>تاريخ الصرف</label><input type="date" name="pay_date" value="${todayISO()}"></div>
+          <div class="field"><label>بيان (اختياري، مثال: راتب شهر أغسطس)</label><input type="text" name="description"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>+ مكافأة (اختياري)</label><input type="number" step="0.01" min="0" name="bonus_amount" value="0"></div>
+          <div class="field"><label>بيان المكافأة</label><input type="text" name="bonus_desc" placeholder="سبب المكافأة"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>- خصم (اختياري)</label><input type="number" step="0.01" min="0" name="deduction_amount" value="0"></div>
+          <div class="field"><label>بيان الخصم</label><input type="text" name="deduction_desc" placeholder="سبب الخصم"></div>
+        </div>
+        <div class="field"><label>- تسوية من السلفة المستحقة (اختياري، بحد أقصى ${fmt2(outstandingAdvance)} ج.م)</label><input type="number" step="0.01" min="0" max="${outstandingAdvance}" name="advance_settle_amount" value="0"></div>
+        <p class="hint" style="margin-top:-4px;">صافي المبلغ اللي هيتسجل كمصروف واحد في الخزينة = المرتب الأساسي + المكافأة − الخصم − مبلغ تسوية السلفة.</p>
+        <div class="modal-foot">
+          <button type="button" class="btn btn-outline btn-sm" data-action="close-modal">تراجع</button>
+          <button class="btn btn-success btn-sm">تأكيد صرف الراتب</button>
+        </div>
+      </form>
+    </div>
+  </div>`;
+}
+function giveAdvanceModalHtml(employeeId){
+  const emp = employeeById(employeeId);
+  if(!emp) return '';
+  return `
+  <div class="overlay" onclick="if(event.target===this){modalState=null;render();}">
+    <div class="modal">
+      <div class="modal-head"><h3>سلفة لـ: ${escapeHtml(emp.name)}</h3><button class="modal-close" data-action="close-modal">✕</button></div>
+      <p class="hint">المبلغ ده بيتسجل مصروف في الخزينة فورًا، وبيفضل "سلفة مستحقة" على الموظف لحد ما تتسوى (كلها أو جزء منها) من راتب لاحق.</p>
+      <form data-form="giveAdvance" data-id="${employeeId}">
+        <div class="row3">
+          <div class="field"><label>المبلغ</label><input type="number" step="0.01" min="0.01" name="amount" required></div>
+          <div class="field"><label>التاريخ</label><input type="date" name="advance_date" value="${todayISO()}"></div>
+          <div class="field"><label>بيان (اختياري)</label><input type="text" name="description"></div>
+        </div>
+        <div class="modal-foot">
+          <button type="button" class="btn btn-outline btn-sm" data-action="close-modal">تراجع</button>
+          <button class="btn btn-gold btn-sm">تأكيد صرف السلفة</button>
+        </div>
+      </form>
+    </div>
+  </div>`;
+}
+function modalHtml(){
+  if(!modalState) return '';
+  if(modalState.type==='collect') return collectModalHtml(modalState.sessionId);
+  if(modalState.type==='cancel') return cancelModalHtml(modalState.sessionId);
+  if(modalState.type==='settle-teacher') return settleModalHtml(modalState.teacherId);
+  if(modalState.type==='pay-salary') return paySalaryModalHtml(modalState.employeeId);
+  if(modalState.type==='give-advance') return giveAdvanceModalHtml(modalState.employeeId);
+  if(modalState.type==='add-session') return addSessionModalHtml();
+  return '';
+}
+
+/* ---------------- Render root ---------------- */
+const VIEW_TITLES = {
+  dashboard: ['الرئيسية','الحصص والمواعيد لليوم المختار'],
+  centers: ['السناتر','السناتر والمدرجات التابعة لكل واحد'],
+  teachers: ['المدرسين','بيانات المدرسين ومواعيدهم الأسبوعية'],
+  'teacher-new': ['إضافة مدرس','بيانات مدرس جديد'],
+  'teacher-edit': ['تعديل مدرس','تعديل البيانات والمواعيد الأسبوعية'],
+  employees: ['الموظفين','بيانات الموظفين ومرتباتهم وسلفهم'],
+  'employee-new': ['إضافة موظف','بيانات موظف جديد'],
+  'employee-edit': ['تعديل موظف','تعديل البيانات وصرف الراتب والسلف'],
+  treasury: ['الخزينة','التحصيل والمصروفات ورصيد السنتر'],
+  expenses: ['مصروفات السنتر','تسجيل مصروفات السنتر'],
+  reports: ['التقارير','كشف حساب مدرس لأي فترة'],
+  settings: ['الإعدادات','بيانات النظام، إضافة المستخدمين وصلاحياتهم'],
+  approvals: ['موافقاتي','المصاريف المرتبطة بحسابك كشريك واللي محتاجة موافقتك'],
+};
+function render(){
+  const app = document.getElementById('app');
+  updateDocumentTitle();
+  if(!SESSION){
+    app.innerHTML = onlineStage==='auth' ? authScreenHtml() : connectScreenHtml();
+    document.getElementById('modalRoot').innerHTML = '';
+    return;
+  }
+  if(!DB){ app.innerHTML = '<div class="setup-wrap"><div class="setup-card" style="max-width:360px;text-align:center;">جاري تحميل البيانات...</div></div>'; return; }
+  const [title, sub] = VIEW_TITLES[currentView] || VIEW_TITLES.dashboard;
+  app.innerHTML = topbarHtml() + `<div class="page-header no-print"><h1>${title}</h1><div class="sub">${sub}</div></div><div class="content">${viewHtml()}</div>`;
+  document.getElementById('modalRoot').innerHTML = modalHtml();
+  positionNavDropdown();
+  updateExpenseRowRemoveButtons();
+}
+function positionNavDropdown(){
+  // .topnav-dropdown is position:fixed so it isn't clipped by .topnav-menu's overflow-x:auto
+  // (which forces overflow-y to compute as "auto" too per the CSS overflow spec, clipping any
+  // absolutely-positioned descendant taller than the nav bar). We compute its coordinates here.
+  const wrap = document.querySelector('.nav-dropdown-wrap.open');
+  if(!wrap) return;
+  const btn = wrap.querySelector('.topnav-btn');
+  const dd = wrap.querySelector('.topnav-dropdown');
+  if(!btn || !dd) return;
+  const r = btn.getBoundingClientRect();
+  dd.style.top = (r.bottom + 6) + 'px';
+  dd.style.right = (window.innerWidth - r.right) + 'px';
+  dd.style.left = 'auto';
+}
+function viewHtml(){
+  switch(currentView){
+    case 'dashboard': return dashboardView();
+    case 'centers': return centersView();
+    case 'teachers': return teachersView();
+    case 'teacher-new': return teacherFormView(null);
+    case 'teacher-edit': return teacherFormView(editingTeacherId);
+    case 'employees': return employeesView();
+    case 'employee-new': return employeeFormView(null);
+    case 'employee-edit': return employeeFormView(editingEmployeeId);
+    case 'treasury': return treasuryView();
+    case 'expenses': return expensesView();
+    case 'reports': return reportsView();
+    case 'settings': return settingsView();
+    case 'approvals': return approvalsView();
+    default: return dashboardView();
+  }
+}
+
+/* ---------------- Event delegation: clicks ---------------- */
+const clickHandlers = {
+  'back-to-connect': ()=>{ onlineStage='connect'; render(); },
+  'logout': ()=>{
+    if(!confirm('تسجيل الخروج؟')) return;
+    clearSessionStorage();
+    SESSION=null; DB=null; onlineStage='auth'; modalState=null;
+    currentView='dashboard'; render();
+  },
+  'refresh-online': async ()=>{ await loadAllTablesFromSupabase(); await beforeRenderPrep(); render(); toast('تم التحديث'); },
+  'refresh-audit-log': async ()=>{ await loadAuditLog(); render(); },
+  'toggle-nav-dropdown': ()=>{ navDropdownOpen = !navDropdownOpen; render(); },
+  'nav': async (id, btn)=>{
+    const target = btn.dataset.target;
+    if(target==='settings'){
+      if(!(SESSION && (SESSION.profile.role==='admin' || can('manage_users') || can('audit_log') || can('settings')))){ toast('الصفحة دي للأدمن أو لمين عنده صلاحية إدارة المستخدمين أو سجل التدقيق أو إعدادات النظام بس'); return; }
+    } else if(target==='approvals'){
+      if(!(SESSION && SESSION.profile.teacherId)){ toast('الصفحة دي متاحة بس لو حسابك مرتبط بشريك (مدرس)'); return; }
+    } else if(TAB_PERM[target] && !can(TAB_PERM[target])){
+      toast('الصلاحية دي مش متاحة لحسابك'); return;
+    }
+    currentView = target;
+    navDropdownOpen = false;
+    if(currentView!=='teacher-edit') editingTeacherId=null;
+    if(currentView!=='employee-edit') editingEmployeeId=null;
+    await beforeRenderPrep();
+    render();
+  },
+  'edit-teacher': (id)=>{ if(!requirePerm('teachers')) return; editingTeacherId=id; currentView='teacher-edit'; render(); },
+  'delete-teacher': async (id)=>{ if(!confirm('تأكيد الحذف؟')) return; await deleteTeacherById(id); render(); },
+  'edit-employee': (id)=>{ if(!requirePerm('employees')) return; editingEmployeeId=id; currentView='employee-edit'; render(); },
+  'delete-employee': async (id)=>{ if(!confirm('تأكيد الحذف؟')) return; await deleteEmployeeById(id); render(); },
+  'delete-schedule': async (id)=>{ if(!confirm('حذف هذا الموعد الأسبوعي؟')) return; await deleteScheduleSlotById(id); render(); },
+  'delete-center': async (id)=>{ if(!confirm('تأكيد حذف السنتر؟')) return; await deleteCenterById(id); render(); },
+  'delete-hall': async (id)=>{ if(!confirm('تأكيد حذف المدرج؟')) return; await deleteHallById(id); render(); },
+  'delete-expense': async (id)=>{ if(!confirm('تأكيد الحذف؟')) return; await deleteExpenseById(id); render(); },
+  'approve-expense': async (id)=>{ if(!confirm('تأكيد الموافقة على المصروف؟')) return; await approveExpense(id); render(); },
+  'reject-expense': async (id)=>{ if(!confirm('تأكيد رفض المصروف؟')) return; await rejectExpense(id); render(); },
+  'delete-ledger-entry': async (id)=>{ if(!confirm('تأكيد حذف القيد؟')) return; await deleteLedgerEntry(id); render(); },
+  'delete-employee-ledger-entry': async (id)=>{ if(!confirm('تأكيد حذف القيد؟')) return; await deleteEmployeeLedgerEntry(id); render(); },
+  'settle-teacher': (id)=>{ modalState={type:'settle-teacher', teacherId:id}; render(); },
+  'pay-salary': (id)=>{ modalState={type:'pay-salary', employeeId:id}; render(); },
+  'give-advance': (id)=>{ modalState={type:'give-advance', employeeId:id}; render(); },
+  'date-prev': async ()=>{ selectedDate = addDaysISO(selectedDate,-1); await beforeRenderPrep(); render(); },
+  'date-next': async ()=>{ selectedDate = addDaysISO(selectedDate,1); await beforeRenderPrep(); render(); },
+  'date-today': async ()=>{ selectedDate = todayISO(); await beforeRenderPrep(); render(); },
+  'open-collect': (id)=>{ modalState={type:'collect', sessionId:id}; render(); },
+  'open-cancel': (id)=>{ modalState={type:'cancel', sessionId:id}; render(); },
+  'open-add-session': ()=>{
+    if(!DB.centers.some(c=>c.active)){ toast('لازم تضيف سنتر ومدرج الأول من "السنتر → السناتر"'); return; }
+    if(!DB.halls.some(h=>h.active)){ toast('لازم تضيف مدرج على الأقل جوه سنتر'); return; }
+    if(!DB.teachers.some(t=>t.active)){ toast('لازم تضيف مدرس الأول'); return; }
+    modalState={type:'add-session'}; render();
+  },
+  'close-modal': ()=>{ modalState=null; render(); },
+  'save-user': async (id, btn)=>{
+    const row = btn.closest('tr');
+    const username = (row.querySelector('td')||{}).textContent || id;
+    const roleSelect = row.querySelector('[data-role-select]');
+    const role = roleSelect ? roleSelect.value : 'staff';
+    const permissions = {};
+    row.querySelectorAll('[data-perm-check]').forEach(cb=>{ permissions[cb.dataset.perm] = cb.checked; });
+    const teacherLinkSelect = row.querySelector('[data-teacher-link-select]');
+    const patch = { role, permissions };
+    if(teacherLinkSelect){ patch.teacherId = teacherLinkSelect.value || null; }
+    try{
+      await dbUpdate('profiles', id, patch);
+      toast('تم تحديث صلاحيات المستخدم');
+      await logAudit('update','user', id, 'عدّل صلاحيات/دور المستخدم: '+username+' → '+(role==='admin'?'أدمن':'موظف'));
+      await refreshUsersList();
+      render();
+    }catch(e){ toast('فشل التحديث: '+e.message); }
+  },
+  'delete-user': async (id)=>{
+    if(!confirm('تأكيد حذف المستخدم ده؟ مش هيقدر يدخل النظام تاني.')) return;
+    await deactivateUserById(id);
+    render();
+  },
+};
+document.addEventListener('click', function(e){
+  const btn = e.target.closest('[data-action]');
+  if(!btn) return;
+  const handler = clickHandlers[btn.dataset.action];
+  if(handler){
+    Promise.resolve(handler(btn.dataset.id, btn)).catch(err=>{
+      console.error(err); toast('حصل خطأ: '+(err&&err.message?err.message:err));
+    });
+  }
+});
+document.addEventListener('click', function(e){
+  if(navDropdownOpen && !e.target.closest('.nav-dropdown-wrap')){
+    navDropdownOpen = false; render();
+  }
+});
+window.addEventListener('resize', function(){ if(navDropdownOpen) positionNavDropdown(); });
+
+// بيجمّع أسعار المراحل السنية من فورم إضافة/تعديل مدرس — checkbox لكل مرحلة مُعلّم (grade_keys)
+// + خانة سعر مرتبطة بيها (rate_<key>)
+function buildGradeRatesFromFd(fd){
+  const keys = fd.getAll('grade_keys');
+  const rates = {};
+  keys.forEach(k=>{ rates[k] = fd.get('rate_'+k); });
+  return rates;
+}
+
+/* ---------------- Event delegation: forms ---------------- */
+const formHandlers = {
+  connectSupa: async (fd)=>{
+    const rawUrl=(fd.get('url')||''); const key=(fd.get('key')||'').trim();
+    if(!rawUrl.trim()||!key){ toast('لازم تدخل الرابط والمفتاح كاملين'); return; }
+    const url = normalizeSupaUrl(rawUrl);
+    toast('بيتأكد من الاتصال...');
+    try{ await testSupaConnection(url, key); }
+    catch(e){ alert('فشل الاتصال بمشروع Supabase:\n\n'+e.message); return; }
+    SUPA = { url, key };
+    onlineStage='auth'; render();
+    toast('تم الاتصال بنجاح');
+  },
+  doLogin: async (fd)=>{
+    try{
+      const username = (fd.get('username')||'').trim();
+      if(!username) throw new Error('اكتب اسم المستخدم');
+      const email = await lookupEmailByUsername(username);
+      if(!email) throw new Error('اسم المستخدم أو كلمة المرور غير صحيحة');
+      const data = await doLogin(email, fd.get('password'));
+      SESSION = data;
+      saveSessionToStorage();
+      await loadAllTablesFromSupabase();
+      currentView='dashboard'; editingTeacherId=null;
+      await beforeRenderPrep();
+      render();
+    }catch(e){ alert('فشل الدخول: '+e.message); }
+  },
+  addCenter: async (fd)=>{ await addCenter(fd.get('name')); render(); },
+  addHall: async (fd, form)=>{ await addHall(form.dataset.id, fd.get('name')); render(); },
+  addTeacher: async (fd)=>{ const gradeRates = buildGradeRatesFromFd(fd); const id = await addTeacher(fd.get('name'), fd.get('subject'), fd.get('rate_per_child'), fd.get('phone'), fd.get('notes'), fd.get('share_percent'), gradeRates); if(id){ editingTeacherId=id; currentView='teacher-edit'; } render(); },
+  saveTeacher: async (fd, form)=>{ const gradeRates = buildGradeRatesFromFd(fd); await saveTeacherData(form.dataset.id, fd.get('name'), fd.get('subject'), fd.get('rate_per_child'), fd.get('phone'), fd.get('notes'), fd.get('share_percent'), gradeRates); render(); },
+  addSchedule: async (fd, form)=>{ await addScheduleSlot(form.dataset.id, fd.get('hall_id'), fd.getAll('days'), fd.get('start_time'), fd.get('end_time'), fd.get('repeat_end_date'), fd.get('grade_level')); render(); },
+  gotoDate: async (fd)=>{ const d = fd.get('date'); if(d){ selectedDate=d; } await beforeRenderPrep(); render(); },
+  addExpense: async (fd)=>{
+    const amounts = fd.getAll('amount');
+    const dates = fd.getAll('ttdate');
+    const descriptions = fd.getAll('description');
+    const teacherIds = fd.getAll('teacher_id');
+    const centerIds = fd.getAll('center_id'); // ممكن تكون فاضية تمامًا لو سنتر واحد بس شغال (الخانة مش بتظهر أصلًا)
+    const itemsJsonList = fd.getAll('items_json'); // لو سطر مقسّم لبنود، هنا مصفوفة {description, amount} كنص JSON
+    let count = 0;
+    for(let i=0;i<amounts.length;i++){
+      const amt = parseFloat(amounts[i]);
+      if(isNaN(amt) || amt<=0) continue;
+      let lineItems = null;
+      if(itemsJsonList[i]){
+        try{ const parsed = JSON.parse(itemsJsonList[i]); if(Array.isArray(parsed) && parsed.length) lineItems = parsed; }
+        catch(e){ /* JSON اتلخبط، تجاهله واعتبر السطر مبلغ عادي */ }
+      }
+      await addExpense(amt, dates[i], descriptions[i], teacherIds[i]||null, centerIds[i]||null, lineItems);
+      count++;
+    }
+    if(count>1) toast('تم تسجيل '+count+' مصروفات');
+    else if(count===1) toast('تم تسجيل المصروف');
+    else toast('لازم تدخل مبلغ صحيح على الأقل في سطر واحد');
+    render();
+  },
+  addLedgerEntry: async (fd, form)=>{ await addManualLedgerEntry(form.dataset.id, fd.get('entry_type'), fd.get('amount'), fd.get('entry_date'), fd.get('description')); render(); },
+  filterReports: async (fd)=>{ if(!requirePerm('reports')) return; reportsState = { teacherId: fd.get('teacher_id'), from: fd.get('from'), to: fd.get('to') }; render(); },
+  settleTeacher: async (fd, form)=>{
+    await settleTeacherBalance(form.dataset.id, fd.get('amount'));
+    modalState=null; render();
+  },
+  addEmployee: async (fd)=>{ const id = await addEmployee(fd.get('name'), fd.get('job_title'), fd.get('base_salary'), fd.get('phone'), fd.get('notes')); if(id){ editingEmployeeId=id; currentView='employee-edit'; } render(); },
+  saveEmployee: async (fd, form)=>{ await saveEmployeeData(form.dataset.id, fd.get('name'), fd.get('job_title'), fd.get('base_salary'), fd.get('phone'), fd.get('notes')); render(); },
+  addEmployeeLedgerEntry: async (fd, form)=>{ await addManualEmployeeLedgerEntry(form.dataset.id, fd.get('entry_type'), fd.get('amount'), fd.get('entry_date'), fd.get('description')); render(); },
+  paySalary: async (fd, form)=>{
+    await payEmployeeSalary(form.dataset.id, fd.get('base_amount'), fd.get('bonus_amount'), fd.get('bonus_desc'), fd.get('deduction_amount'), fd.get('deduction_desc'), fd.get('advance_settle_amount'), fd.get('pay_date'), fd.get('description'));
+    modalState=null; render();
+  },
+  giveAdvance: async (fd, form)=>{
+    await giveEmployeeAdvance(form.dataset.id, fd.get('amount'), fd.get('advance_date'), fd.get('description'));
+    modalState=null; render();
+  },
+  collectSession: async (fd, form)=>{
+    const amount = parseFloat(fd.get('amount'));
+    if(isNaN(amount) || amount<0){ toast('مبلغ غير صحيح'); return; }
+    const note = (fd.get('note')||'').trim();
+    await collectSession(form.dataset.id, amount, note);
+    modalState=null; render();
+  },
+  cancelSession: async (fd, form)=>{
+    const reason = fd.get('reason');
+    const custom = fd.get('custom_reason');
+    const postponeDate = fd.get('postpone_date');
+    if(reason==='تأجيل لموعد تاني' && !postponeDate){ toast('لازم تحدد التاريخ الجديد'); return; }
+    if(reason==='سبب تاني' && !(custom||'').trim()){ toast('اكتب السبب'); return; }
+    await cancelSession(form.dataset.id, reason, custom, postponeDate);
+    modalState=null; render();
+  },
+  addSessionModal: async (fd)=>{
+    await addAdhocSession(selectedDate, fd.get('hall_id'), fd.get('teacher_id'), fd.get('children_count'), fd.get('start_time'), fd.get('rate_per_child'), fd.get('grade_level'));
+    modalState=null; render();
+  },
+  saveOrgSettings: async (fd)=>{
+    await saveOrgSettings(fd.get('company_name'), fd.get('phone'), fd.get('address'));
+    render();
+  },
+  addUser: async (fd, form)=>{
+    const role = fd.get('role');
+    const permissions = {};
+    PERMISSION_MODULES.forEach(m=>{ permissions[m.key] = fd.get('perm_'+m.key)==='on'; });
+    const teacherId = fd.get('teacher_id') || null;
+    const ok = await adminCreateUser(fd.get('full_name'), fd.get('username'), fd.get('password'), role, permissions, teacherId);
+    if(ok){ form.reset(); }
+    await refreshUsersList();
+    render();
+  },
+};
+document.addEventListener('submit', function(e){
+  const form = e.target.closest('form[data-form]');
+  if(!form) return;
+  e.preventDefault();
+  // امنع الإرسال المتكرر (دبل كليك أو الضغط تاني قبل ما الأول يخلص) — من غير الحماية دي
+  // أي فورم فيه عملية شبكة (زي تسجيل مصروف) ممكن يتسجل أكتر من مرة لو المستخدم ضغط بسرعة.
+  if(form.dataset.submitting === '1') return;
+  const handler = formHandlers[form.dataset.form];
+  if(!handler) return;
+  form.dataset.submitting = '1';
+  const submitBtn = form.querySelector('button[type="submit"], button:not([type])');
+  if(submitBtn) submitBtn.disabled = true;
+  Promise.resolve(handler(new FormData(form), form))
+    .catch(err=>{
+      console.error(err); toast('حصل خطأ: '+(err&&err.message?err.message:err));
+    })
+    .finally(()=>{
+      // لو الفورم اتشال من الصفحة خلاص (لأن render() غيّر الشاشة بنجاح) مفيش داعي نلمسه تاني
+      if(form.isConnected){ form.dataset.submitting=''; if(submitBtn) submitBtn.disabled=false; }
+    });
+});
+
+/* ---------------- Init ---------------- */
+async function init(){
+  // حاول استرجاع الجلسة المحفوظة أول حاجة عشان الريفرش ميرجّعش لصفحة تسجيل الدخول
+  const saved = loadSessionFromStorage();
+  if(saved && saved.supa && saved.session){
+    try{
+      await testSupaConnection(saved.supa.url, saved.supa.key);
+      SUPA = saved.supa;
+      SESSION = saved.session;
+      onlineStage='auth';
+      try{
+        await loadAllTablesFromSupabase();
+        currentView='dashboard'; editingTeacherId=null;
+        await beforeRenderPrep();
+        render();
+        return;
+      }catch(e){
+        // فشل تحميل البيانات (توكن منتهي وفشل تجديده مثلاً) - ارجع لتسجيل الدخول
+        clearSessionStorage();
+        SESSION=null; DB=null;
+      }
+    }catch(e){
+      // فشل الاتصال بنفس المشروع المحفوظ - امسح الجلسة واكمل عادي
+      clearSessionStorage();
+      SESSION=null; DB=null;
+    }
+  }
+  if(DEFAULT_SUPABASE_URL && DEFAULT_SUPABASE_KEY){
+    const url = normalizeSupaUrl(DEFAULT_SUPABASE_URL);
+    const key = DEFAULT_SUPABASE_KEY.trim();
+    try{
+      await testSupaConnection(url, key);
+      SUPA = { url, key };
+      onlineStage='auth';
+    }catch(e){
+      onlineStage='connect';
+    }
+  } else {
+    onlineStage='connect';
+  }
+  render();
+}
+init();
+</script>
+</body>
+</html>
